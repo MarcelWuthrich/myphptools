@@ -3,15 +3,14 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>my PHP Tools</title>
+    <title>Tracking</title>
 </head>
 
 <body >
 
-<form action="tracking.php" method="post">
 
 
-<a href="tracking.php">Tracking</a>
+<a href="tracking_user_day.php">Tracking : one user one day</a>
 
 <?php
 
@@ -24,8 +23,6 @@
 
 ?>
 
-
-</form>
 
 </body>
 </html>

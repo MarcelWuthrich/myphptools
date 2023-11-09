@@ -13,7 +13,8 @@ class cl_tracking
         $pass='root';
 
         try {
-            $dbh = new PDO('mysql:host=localhost;dbname=vysual', $user, $pass);
+            $dbh = new PDO('mysql:host=localhost;dbname=vysual', 'root', 'root');
+            //$dbh = new PDO('mysql:host=db;dbname=vysual', 'root'', 'test''); // connexion to vagrant
             //echo 'Connection opened<BR>';
         }
         catch (PDOException $e) {

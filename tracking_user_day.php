@@ -8,6 +8,8 @@
 
 <body >
 
+<a href="index.php">Tools</a>→<a href="tracking.php">Tracking</a><BR><BR>
+
 <form action="tracking_user_day.php" method="post">
 
 
@@ -15,6 +17,31 @@
 
 
 include 'class/class_tracking.php';
+
+
+
+$_POST["per_id"] = '000001-20170904-0000000110';
+$_POST["this_date"] = '2023-07-14';
+
+echo '<label for="this_date" size="50">date:</label><BR>';
+if (empty($_POST["this_date"])) {
+    echo '<input type="date" id="this_date" name="this_date" value="' . date("Y-m-d") . '" />';
+}
+else {
+    echo '<input type="date" id="this_date" name="this_date" value="' . $_POST["this_date"] .  '" />';
+}
+echo '<BR><BR>';
+
+echo '<label for="per_id" size="50">per_id:</label><BR>';
+if (empty($_POST["per_id"])) {
+    echo '<input type="text" id="per_id" name="per_id" value="" size="30"><br><br>';
+}
+else {    
+    echo '<input type="text" id="per_id" name="per_id" value="' . $_POST["per_id"] . '" size="30"><br><br>';
+
+}
+
+
 
 if (!empty($_POST)) {
 
@@ -56,27 +83,6 @@ if (!empty($_POST)) {
 
 
 
-$_POST["per_id"] = '000001-20170904-0000000110';
-$_POST["this_date"] = '2023-07-14';
-
-echo '<label for="this_date" size="50">date:</label><BR>';
-if (empty($_POST["this_date"])) {
-    echo '<input type="date" id="this_date" name="this_date" value="' . date("Y-m-d") . '" />';
-}
-else {
-    echo '<input type="date" id="this_date" name="this_date" value="' . $_POST["this_date"] .  '" />';
-}
-echo '<BR><BR>';
-
-echo '<label for="per_id" size="50">per_id:</label><BR>';
-if (empty($_POST["per_id"])) {
-    echo '<input type="text" id="per_id" name="per_id" value="" size="30"><br><br>';
-}
-else {    
-    echo '<input type="text" id="per_id" name="per_id" value="' . $_POST["per_id"] . '" size="30"><br><br>';
-
-}
-
 
 /*
 
@@ -97,11 +103,6 @@ else {
 
 
 <input type="submit" value="Execute">
-
-<BR><BR>
-<a href="tracking.php">Backup to tracking</a>
-<BR>
-<a href="index.php">Backup to my PHP Tools</a>
 
 </form>
 

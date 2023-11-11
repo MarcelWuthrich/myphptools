@@ -17,11 +17,14 @@
 
 
 include 'class/class_tracking.php';
+include 'class/class_display.php';
 
 
 
-$_POST["per_id"] = '000001-20170904-0000000110';
-$_POST["this_date"] = '2023-07-14';
+//$_POST["per_id"] = '000001-20170904-0000000110';
+//$_POST["this_date"] = '2023-07-14';
+ 
+$_POST = $_POST;
 
 echo '<label for="this_date" size="50">date:</label><BR>';
 if (empty($_POST["this_date"])) {
@@ -48,37 +51,11 @@ if (!empty($_POST)) {
     $mytrk  = new cl_tracking;
     $myresults = $mytrk->getTrackingFromDatePerId($_POST["per_id"],$_POST["this_date"]);
 
-    foreach($myresults as $myresult ){
-        echo $myresult["trk_id"] . ' ';
-        echo $myresult["trk_booking_date_time"] . ' ';
-
-        switch($myresult["trk_action"]) {
-
-            case 210:
-                echo 'Stop Activity';
-                break;
+    $mydisplay = new cl_display;
+    $mydisplay->display_tracking_user_day($myresults);
     
-                case 240:
-                    echo 'Start Activity';
-                    break;
-        
-                    case 254:
-                        echo 'Out';
-                        break;
-            
-                        case 255:
-                            echo 'In';
-                            break;
-                
-                                        
-        }
-        echo '<BR>';
-        
-        //echo date_format($myresult["trk_booking_date_time"],"Y/m/d");
-        //echo date_format($myresult["trk_booking_date_time"],"H:i:s") . '<BR>';
-        
-    }
 
+    
 }
 
 

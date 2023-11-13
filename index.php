@@ -4,16 +4,19 @@
 <head>
     <meta charset="utf-8">
     <title>my PHP Tools</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body >
 
-<a href="index.php">Tools</a><BR><BR>
+<ul>
+  <li><a class="active" href="index.php">Tools</a>     </li>
+</ul>
 
-<form action="tracking.php" method="post">
-
-
+<BR>
 <a href="tracking.php">Tracking</a>
+<BR><BR>
+<a href="#">Device</a>
 
 <?php
 

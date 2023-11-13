@@ -4,13 +4,20 @@
 <head>
     <meta charset="utf-8">
     <title>Tracking one user one day</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body >
 
-<a href="index.php">Tools</a>→<a href="tracking.php">Tracking</a><BR><BR>
+<ul>
+  <li><a class="active" href="index.php">Tools</a></li>
+  <li><a href="tracking.php">Tracking</a></li>
+  <li><a href="tracking_user_day.php">Tracking 1 user 1 day</a></li>
+</ul>
 
-<form action="tracking_user_day.php" method="post">
+
+
+<BR><form action="tracking_user_day.php" method="post">
 
 
 <?php

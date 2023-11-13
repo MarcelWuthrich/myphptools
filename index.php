@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>my PHP Tools</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style/style.css">
 </head>
 
 <body >
@@ -13,10 +13,10 @@
   <li><a class="active" href="index.php">Tools</a>     </li>
 </ul>
 
-<BR>
-<a href="tracking.php">Tracking</a>
-<BR><BR>
-<a href="#">Device</a>
+<BR><a href="tracking.php">Tracking</a>
+<BR><BR><a href="#">Device</a>
+<BR><BR><a href="#">Contrats</a>
+<BR><BR><a href="#">Accounting</a>
 
 <?php
 

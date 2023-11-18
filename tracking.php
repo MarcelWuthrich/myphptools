@@ -16,7 +16,8 @@
 
 
 <BR>
-<a href="tracking_user_day.php">Tracking 1 user 1 day</a>
+<a href="tracking_user_day.php">Tracking 1 user 1 day</a><BR><BR>
+<a href="tracking_check_balance_year_end.php">Check balance at year-end</a>
 
 <?php
 

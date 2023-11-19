@@ -1,11 +1,11 @@
 <?php
 
-class cl_activity_counter
+class cl_working_time
 
 {
 
     
-    public function get_wkt_holiday_entitlement_by_year($per_id, $avc_id, $year) {
+    public function get_active_per_id_between_date($start_date, $end_date) {
     
         
         // Connexion à la DB
@@ -23,11 +23,10 @@ class cl_activity_counter
         }
 
         try {
-            $sql = 'select sum(aca_amount), sum(aca_real_amount) from vtm_activity_counter_accounting ';
-            $sql .= 'where avc_id = \'' . $avc_id .   '\' and date(aca_date_time) >= \'2023-01-01\' and date(aca_date_time) <= \'2023-12-31\' and ';
-            $sql .= 'per_id = \'' . $per_id . '\' and aca_type = \'WORKING_TIME\';';
+            $sql  = 'select * from gbl_person where per_id = \'' . $per_id . '\';';
 
-
+            $sql = 'select per_id from vtm_working_time where wkt_start_date <= \'' . $start_date . '\' ';
+            $sql .= 'and  (wkt_end_date >=\'' . $end_date . '\' or wkt_end_date is null);';
 
             $sth = $dbh->query($sql);
             $rows = $sth->fetchAll();

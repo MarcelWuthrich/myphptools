@@ -26,126 +26,117 @@
 include 'class/class_time_sheet.php';
 include 'class/class_display.php';
 include 'class/class_activity_counter.php';
+include 'class/class_person.php';
+include 'class/class_working_time.php';
 
 
-$my0101date = '2023-01-01';
-$my3112date = '2022-12-31';
-$per_id = '000001-20181107-0000000072';
-$avc_id = '000001-20150119-0000009694';     /* Vacances */
+$my0101date = '2019-01-01';
+$my3112date = '2018-12-31';
+$mybalance0101 = '';
+$mybalance3112 = '';
+$holiday_entitlement_by_year = '';
+
+// $per_id = '000001-20181107-0000000072';     /* Althaus Anita chez Zesar */ 
+
+$per_id = '';
+$avc_id = '000001-20150713-0000005285';     /* Vacances */
+
+$myactiveworkingtime = new cl_working_time;
+$allpersons = $myactiveworkingtime->get_active_per_id_between_date($my3112date,$my0101date);
+
+foreach ($allpersons as $person) {
+
+    $person = $person;
+    $per_id = $person['per_id'];
 
 
-$mytst = new cl_time_sheet;
-$mytst = $mytst->getTimeSheetFromDatePerId($per_id,$my0101date);
-$my0101balancejson = $mytst[0]['tst_soldes'];
-$mytst = null;
+        
+    $myperson = new cl_person;
+    $myperson = $myperson->getPersonFromPerId($per_id);
 
-$mytst2 = new cl_time_sheet;
-$mytst2 = $mytst2->getTimeSheetFromDatePerId($per_id,$my3112date);
-$my3112balancejson = $mytst2[0]['tst_soldes'];
-$mytst2 = null;
+    $mytst = new cl_time_sheet;
+    $mytst = $mytst->getTimeSheetFromDatePerId($per_id,$my0101date);
+    $my0101balancejson = $mytst[0]['tst_soldes'];
+    $my0101theoriticaltodo = $mytst[0]['tst_theoretical_todo'];
+    $mytst = null;
 
-echo $my3112balancejson . '<BR><BR>';
-echo $my0101balancejson . '<BR><BR>';
+    $mytst2 = new cl_time_sheet;
+    $mytst2 = $mytst2->getTimeSheetFromDatePerId($per_id,$my3112date);
+    $my3112balancejson = $mytst2[0]['tst_soldes'];
+    $my3112theoriticaltodo = $mytst2[0]['tst_theoretical_todo'];
+    $mytst2 = null;
 
-$my0101balancejsonarray = json_decode($my0101balancejson);
-$my3112balancejsonarray = json_decode($my3112balancejson);
-$myjson =$myjson;
+    /*
+    echo $my3112balancejson . '<BR><BR>';
+    echo $my0101balancejson . '<BR><BR>';
+    echo $my0101theoriticaltodo . '<BR><BR>';
+    echo $my3112theoriticaltodo . '<BR><BR>';
+    */
 
-echo '<br><br>';
+    $my0101balancejsonarray = json_decode($my0101balancejson);
+    $my3112balancejsonarray = json_decode($my3112balancejson);
+    $myjson =$myjson;
 
 
-foreach ($my3112balancejsonarray as $balances) {
-    foreach ($balances as $balance) {
-        $balance = $balance;
-        if ($balance->avcId == $avc_id) {
-            echo 'name : ' . $balance->name . '<BR>';
-            echo 'avcId : ' . $balance->avcId . '<BR>';
-            echo 'humanReadableAmount : ' . $balance->humanReadableAmount . '<BR>';
-            echo 'amount : ' . $balance->amount . '<BR>';
-            echo 'computeAmount : ' . $balance->computeAmount . '<BR>';
-            echo '<br>';    
+    foreach ($my3112balancejsonarray as $balances) {
+        foreach ($balances as $balance) {
+            $balance = $balance;
+            if ($balance->avcId == $avc_id) {
+                /*
+                echo 'name : ' . $balance->name . '<BR>';
+                echo 'avcId : ' . $balance->avcId . '<BR>';
+                echo 'humanReadableAmount : ' . $balance->humanReadableAmount . '<BR>';
+                echo 'amount : ' . $balance->amount . '<BR>';
+                echo 'computeAmount : ' . $balance->computeAmount . '<BR>';
+                echo '<br>';
+                */
+                $mybalance3112 = $balance->amount;
+            }
         }
     }
-}
 
-echo '<br><br>';
-
-foreach ($my0101balancejsonarray as $balances) {
-    foreach ($balances as $balance) {
-        $balance = $balance;
-        if ($balance->avcId == $avc_id) {
-            echo 'name : ' . $balance->name . '<BR>';
-            echo 'avcId : ' . $balance->avcId . '<BR>';
-            echo 'humanReadableAmount : ' . $balance->humanReadableAmount . '<BR>';
-            echo 'amount : ' . $balance->amount . '<BR>';
-            echo 'computeAmount : ' . $balance->computeAmount . '<BR>';
-            echo '<br>';    
+    foreach ($my0101balancejsonarray as $balances) {
+        foreach ($balances as $balance) {
+            $balance = $balance;
+            if ($balance->avcId == $avc_id) {
+                /*
+                echo 'name : ' . $balance->name . '<BR>';
+                echo 'avcId : ' . $balance->avcId . '<BR>';
+                echo 'humanReadableAmount : ' . $balance->humanReadableAmount . '<BR>';
+                echo 'amount : ' . $balance->amount . '<BR>';
+                echo 'computeAmount : ' . $balance->computeAmount . '<BR>';
+                echo '<br>';    
+                */
+                $mybalance0101 = $balance->amount;
+            }
         }
     }
-}
 
-$myaca = new cl_activity_counter;
-$myholiday = $myaca->get_wkt_holiday_entitlement_by_year($per_id,$avc_id,'2023');
-echo $myholiday[0][0];
-$myholiday = '<br>' . $myholiday . '<br>';
-
-/*
-select * from vtm_activity_counter where avc_id = '000001-20150119-0000009694';
-*/
+    $myaca = new cl_activity_counter;
+    $myholiday = $myaca->get_wkt_holiday_entitlement_by_year($per_id,$avc_id,'2023');
+    $holiday_entitlement_by_year = $myholiday[0][0];
 
 
-//$_POST["per_id"] = '000001-20170904-0000000110';
-//$_POST["this_date"] = '2023-07-14';
- 
-$_POST = $_POST;
- /*
-echo '<label for="this_date" size="50">date:</label><BR>';
-if (empty($_POST["this_date"])) {
-    echo '<input type="date" id="this_date" name="this_date" value="' . date("Y-m-d") . '" />';
-}
-else {
-    echo '<input type="date" id="this_date" name="this_date" value="' . $_POST["this_date"] .  '" />';
-}
-echo '<BR><BR>';
+    echo 'Employé : ' . $myperson[0]['per_name'] . ' ' . $myperson[0]['per_firstname'] . '<br>';
+    echo 'Solde au ' . $my3112date . ' : ' . $mybalance3112 . '<br>';
+    echo 'Solde au ' . $my0101date . ' : ' . $mybalance0101 . '<br>';
+    echo 'Augmentation : ' . $mybalance0101 - $mybalance3112 . '<br>';
+    echo 'Droit aux vacances : ' . $holiday_entitlement_by_year . '<br>';
 
-echo '<label for="per_id" size="50">per_id:</label><BR>';
-if (empty($_POST["per_id"])) {
-    echo '<input type="text" id="per_id" name="per_id" value="" size="30"><br><br>';
-}
-else {    
-    echo '<input type="text" id="per_id" name="per_id" value="' . $_POST["per_id"] . '" size="30"><br><br>';
-
-}
-
-
-
-if (!empty($_POST)) {
-
-    $mytrk  = new cl_tracking;
-    $myresults = $mytrk->getTrackingFromDatePerId($_POST["per_id"],$_POST["this_date"]);
-
-    $mydisplay = new cl_display;
-    $mydisplay->display_tracking_user_day($myresults);
+    $mydiff = $mybalance0101 - $mybalance3112 - $holiday_entitlement_by_year;
+    if ($mydiff <> 0) {
+        echo 'ATTENTION - Différence : ' . $mybalance0101 - $mybalance3112 - $holiday_entitlement_by_year . '<br><br>';
+    } else {
+        echo 'Différence : ' . $mybalance0101 - $mybalance3112 - $holiday_entitlement_by_year . '<br><br>';
+    }
     
+
 
     
 }
 
-*/
 
 
-
-/*
-
-if (!empty($_POST))   {
-    echo '<input type="date" id="this_date" name="this_date" value="' . $_POST["this_date"] .  '" />';
-}
-else {
-    // echo '<input type="date" id="this_date" name="this_date" value="' . date("Y-m-d") . '" />';
-    echo '<input type="date" id="this_date" name="this_date" value="2022-07-14" />';
-}
-
-*/
 
 
 ?>

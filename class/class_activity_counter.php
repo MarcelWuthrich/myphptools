@@ -24,7 +24,7 @@ class cl_activity_counter
 
         try {
             $sql = 'select sum(aca_amount), sum(aca_real_amount) from vtm_activity_counter_accounting ';
-            $sql .= 'where avc_id = \'' . $avc_id .   '\' and date(aca_date_time) >= \'2023-01-01\' and date(aca_date_time) <= \'2023-12-31\' and ';
+            $sql .= 'where avc_id = \'' . $avc_id .   '\' and date(aca_date_time) >= \'2020-01-01\' and date(aca_date_time) <= \'2020-12-31\' and ';
             $sql .= 'per_id = \'' . $per_id . '\' and aca_type = \'WORKING_TIME\';';
 
 

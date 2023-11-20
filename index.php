@@ -25,6 +25,8 @@
 //include 'class_timecode.php';
 //include 'classe_person.php';
 
+//echo print_r($_SERVER);
+var_dump($_SERVER);
 
 
 ?>

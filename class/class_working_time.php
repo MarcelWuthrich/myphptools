@@ -9,17 +9,23 @@ class cl_working_time
     
         
         // Connexion à la DB
-        //include 'class/class_constant.php';
+        include_once 'constant.php';
 
-        $user='root';
-        $pass='root';
+        $myip = $_SERVER["SERVER_ADDR"] ;
+        $user = USER;
 
-        try {
+        if (($myip == IP1HOME) or ($myip == IP2HOME)) {
+          $pass = PASSWORDHOME;
+          $dsn  = DSNHOME;
+        }
 
-            $dbh = new PDO('mysql:host=localhost;dbname=vysual', 'root', 'root');
-            //$dbh = new PDO();
-            //$dbh = new PDO('mysql:host=db;dbname=vysual', 'root'', 'test''); // connexion to vagrant
-            //echo 'Connection opened<BR>';
+        if (($myip == IP1WORK)) {
+          $pass = PASSWORDWORK;
+          $dsn  = DSNWORK;  
+        }
+
+        TRY {
+            $dbh = new PDO($dsn, $user, $pass);
         }
         catch (PDOException $e) {
             // tenter de réessayer la connexion après un certain délai, par exemple

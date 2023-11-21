@@ -67,20 +67,6 @@ if (!empty($_POST)) {
 
 
 
-
-/*
-
-if (!empty($_POST))   {
-    echo '<input type="date" id="this_date" name="this_date" value="' . $_POST["this_date"] .  '" />';
-}
-else {
-    // echo '<input type="date" id="this_date" name="this_date" value="' . date("Y-m-d") . '" />';
-    echo '<input type="date" id="this_date" name="this_date" value="2022-07-14" />';
-}
-
-*/
-
-
 ?>
 <BR><BR>
 

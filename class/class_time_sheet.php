@@ -9,13 +9,23 @@ class cl_time_sheet
     
         
         // Connexion à la DB
-        $user='root';
-        $pass='root';
+        include_once 'constant.php';
+
+        $myip = $_SERVER["SERVER_ADDR"] ;
+        $user = USER;
+
+        if (($myip == IP1HOME) or ($myip == IP2HOME)) {
+          $pass = PASSWORDHOME;
+          $dsn  = DSNHOME;
+        }
+
+        if (($myip == IP1WORK)) {
+          $pass = PASSWORDWORK;
+          $dsn  = DSNWORK;  
+        }
 
         try {
-            $dbh = new PDO('mysql:host=localhost;dbname=vysual', 'root', 'root');
-            //$dbh = new PDO('mysql:host=db;dbname=vysual', 'root'', 'test''); // connexion to vagrant
-            //echo 'Connection opened<BR>';
+            $dbh = new PDO($dsn, $user, $pass);
         }
         catch (PDOException $e) {
             // tenter de réessayer la connexion après un certain délai, par exemple

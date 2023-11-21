@@ -23,8 +23,6 @@
 
 //include 'class_tracking.php';
 //include 'class_timecode.php';
-//include 'classe_person.php';
-
 
 
 ?>

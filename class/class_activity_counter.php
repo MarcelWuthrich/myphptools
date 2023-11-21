@@ -9,14 +9,25 @@ class cl_activity_counter
     
         
         // Connexion à la DB
-        $user='root';
-        $pass='root';
+        include_once 'constant.php';
+
+        $myip = $_SERVER["SERVER_ADDR"] ;
+        $user = USER;
+
+        if (($myip == IP1HOME) or ($myip == IP2HOME)) {
+          $pass = PASSWORDHOME;
+          $dsn  = DSNHOME;
+        }
+
+        if (($myip == IP1WORK)) {
+          $pass = PASSWORDWORK;
+          $dsn  = DSNWORK;  
+        }
 
         try {
-            $dbh = new PDO('mysql:host=localhost;dbname=vysual', 'root', 'root');
-            //$dbh = new PDO('mysql:host=db;dbname=vysual', 'root'', 'test''); // connexion to vagrant
-            //echo 'Connection opened<BR>';
+            $dbh = new PDO($dsn, $user, $pass);
         }
+        
         catch (PDOException $e) {
             // tenter de réessayer la connexion après un certain délai, par exemple
             echo 'Error by opening connection<BR>';
@@ -24,7 +35,7 @@ class cl_activity_counter
 
         try {
             $sql = 'select sum(aca_amount), sum(aca_real_amount) from vtm_activity_counter_accounting ';
-            $sql .= 'where avc_id = \'' . $avc_id .   '\' and date(aca_date_time) >= \'2023-01-01\' and date(aca_date_time) <= \'2023-12-31\' and ';
+            $sql .= 'where avc_id = \'' . $avc_id .   '\' and date(aca_date_time) >= \'2020-01-01\' and date(aca_date_time) <= \'2020-12-31\' and ';
             $sql .= 'per_id = \'' . $per_id . '\' and aca_type = \'WORKING_TIME\';';
 
 

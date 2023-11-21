@@ -4,18 +4,28 @@ class cl_working_time
 
 {
 
-    
+
     public function get_active_per_id_between_date($start_date, $end_date) {
     
         
         // Connexion à la DB
-        $user='root';
-        $pass='root';
+        include_once 'constant.php';
 
-        try {
-            $dbh = new PDO('mysql:host=localhost;dbname=vysual', 'root', 'root');
-            //$dbh = new PDO('mysql:host=db;dbname=vysual', 'root'', 'test''); // connexion to vagrant
-            //echo 'Connection opened<BR>';
+        $myip = $_SERVER["SERVER_ADDR"] ;
+        $user = USER;
+
+        if (($myip == IP1HOME) or ($myip == IP2HOME)) {
+          $pass = PASSWORDHOME;
+          $dsn  = DSNHOME;
+        }
+
+        if (($myip == IP1WORK)) {
+          $pass = PASSWORDWORK;
+          $dsn  = DSNWORK;  
+        }
+
+        TRY {
+            $dbh = new PDO($dsn, $user, $pass);
         }
         catch (PDOException $e) {
             // tenter de réessayer la connexion après un certain délai, par exemple
@@ -23,8 +33,7 @@ class cl_working_time
         }
 
         try {
-            $sql  = 'select * from gbl_person where per_id = \'' . $per_id . '\';';
-
+            
             $sql = 'select per_id from vtm_working_time where wkt_start_date <= \'' . $start_date . '\' ';
             $sql .= 'and  (wkt_end_date >=\'' . $end_date . '\' or wkt_end_date is null);';
 

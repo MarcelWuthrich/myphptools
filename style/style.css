@@ -28,3 +28,10 @@ li a {
 li a:hover {
   background-color: #111;
 }
+
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  border: 10px solid purple;
+}

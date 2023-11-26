@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>my PHP Tools</title>
+    <link rel="stylesheet" href="../style/style.css" type="text/css">
+</head>
+
+<body >
+
 <?php
 
 class cl_display
@@ -13,7 +24,7 @@ class cl_display
             $myarray_count = count($myarray);
 
             echo '<BR><BR>';
-            echo '<table border="1" cellspacing="5">';
+            echo '<table border="1" cellspacing="0" cellpading="3">';
             echo '<tr>';
             
             echo '<th>trk_id</th>';
@@ -125,3 +136,6 @@ class cl_display
     
 
 ?>
+
+</body>
+</html>

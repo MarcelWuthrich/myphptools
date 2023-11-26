@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-
-<html lang="fr">
-<head>
-    <meta charset="utf-8">
-    <title>my PHP Tools</title>
-    <link rel="stylesheet" href="../style/style.css" type="text/css">
-</head>
-
-<body >
 
 <?php
 
@@ -136,6 +126,3 @@ class cl_display
     
 
 ?>
-
-</body>
-</html>

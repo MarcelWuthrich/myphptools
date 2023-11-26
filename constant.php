@@ -9,6 +9,7 @@
     define("IP1HOME","192.168.126.130");
     define("IP2HOME","127.0.0.1");
     define("IP1WORK","192.168.56.103");
+    define("IP2WORK","");
 
 
 ?>

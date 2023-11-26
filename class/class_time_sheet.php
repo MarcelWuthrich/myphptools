@@ -19,7 +19,7 @@ class cl_time_sheet
           $dsn  = DSNHOME;
         }
 
-        if (($myip == IP1WORK)) {
+        if (($myip == IP1WORK) or ($myip == IP2WORK)) {
           $pass = PASSWORDWORK;
           $dsn  = DSNWORK;  
         }

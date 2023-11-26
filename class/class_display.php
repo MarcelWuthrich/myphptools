@@ -20,6 +20,7 @@ class cl_display
             echo '<th>trk_id</th>';
             echo '<th>trk_booking_date_time</th>';
             echo '<th>trk_action</th>';
+            echo '<th>trk_per_fullname</th>';
             echo '<th>trk_created_by</th>';
             echo '<th>trk_created_date</th>';
             echo '<th>trk_modified_by</th>';
@@ -51,6 +52,7 @@ class cl_display
                         
                                                 
                 }
+                echo '<td>' . $myarray[$i]['trk_per_fullname'] . '</td>';
                 echo '<td>' . $myarray[$i]['trk_created_by'] . '</td>';
                 echo '<td>' . $myarray[$i]['trk_created_date'] . '</td>';
                 echo '<td>' . $myarray[$i]['trk_modified_by'] . '</td>';

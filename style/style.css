@@ -1,6 +1,6 @@
 body
 {
-    background-color:aqua;
+    background-color:bisque;
 font-family: Verdana, Geneva, Tahoma, sans-serif; 
 font-size:small;
 }
@@ -29,9 +29,9 @@ li a:hover {
   background-color: #111;
 }
 
-table {
+table,td,th,tr {
   table-layout: fixed;
-  width: 100%;
   border-collapse: collapse;
-  border: 10px solid purple;
+  border: 1px solid black;
+  padding: 5px;
 }

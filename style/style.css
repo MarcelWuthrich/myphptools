@@ -2,7 +2,7 @@ body
 {
     background-color:bisque;
 font-family: Verdana, Geneva, Tahoma, sans-serif; 
-font-size: small;
+font-size:small;
 }
 
 ul {
@@ -27,4 +27,11 @@ li a {
 
 li a:hover {
   background-color: #111;
+}
+
+table,td,th,tr {
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 1px solid black;
+  padding: 5px;
 }

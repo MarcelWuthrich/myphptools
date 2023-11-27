@@ -1,3 +1,4 @@
+
 <?php
 
 class cl_display
@@ -13,12 +14,13 @@ class cl_display
             $myarray_count = count($myarray);
 
             echo '<BR><BR>';
-            echo '<table border="1" cellspacing="5">';
+            echo '<table border="1" cellspacing="0" cellpading="3">';
             echo '<tr>';
             
             echo '<th>trk_id</th>';
             echo '<th>trk_booking_date_time</th>';
             echo '<th>trk_action</th>';
+            echo '<th>trk_per_fullname</th>';
             echo '<th>trk_created_by</th>';
             echo '<th>trk_created_date</th>';
             echo '<th>trk_modified_by</th>';
@@ -50,6 +52,7 @@ class cl_display
                         
                                                 
                 }
+                echo '<td>' . $myarray[$i]['trk_per_fullname'] . '</td>';
                 echo '<td>' . $myarray[$i]['trk_created_by'] . '</td>';
                 echo '<td>' . $myarray[$i]['trk_created_date'] . '</td>';
                 echo '<td>' . $myarray[$i]['trk_modified_by'] . '</td>';

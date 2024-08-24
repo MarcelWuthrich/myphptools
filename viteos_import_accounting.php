@@ -37,6 +37,49 @@ if (!empty($_POST)) {
 
 
 
+// Chemin vers votre fichier CSV
+$csv_file = '2024-04-25 Export_Soldes_ProTime.csv';
+
+// Initialisation du tableau pour stocker les données
+$csv_data = array();
+
+// Ouverture du fichier en lecture
+if (($handle = fopen($csv_file, "r")) !== FALSE) {
+    // Parcourir chaque ligne du fichier
+    while (($line = fgetcsv($handle, 1000, ";")) !== FALSE) {
+        // Ajouter chaque ligne au tableau
+        $csv_data[] = array(
+            'ID' => $line[0],
+            'Libelle' => $line[1],
+            'Montant' => $line[2],
+            'Date' => $line[3]
+        );
+    }
+    // Fermeture du fichier
+    fclose($handle);
+    // echo "File read successfully";
+} else {
+    echo "Error opening file";
+}
+
+
+// Boucle infinie
+while (true) {
+    // Parcourir chaque ligne du tableau
+    foreach ($csv_data as $line) {
+        // Afficher les valeurs
+        echo "ID: " . $line['ID'] . "<br>";
+        echo "Libellé: " . $line['Libelle'] . "<br>";
+        echo "Montant: " . $line['Montant'] . "<br>";
+        echo "Date: " . $line['Date'] . "<br><br>";
+    }
+
+    // Ajouter une petite pause pour éviter que le script ne surconsomme les ressources
+    sleep(1);
+}
+
+
+
 
 
 

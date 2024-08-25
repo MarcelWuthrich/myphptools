@@ -24,6 +24,11 @@ class cl_tracking
           $dsn  = DSNWORK;  
         }
 
+        $user = USER;
+        $pass = PASSWORD;
+        $dsn = DSN;
+    
+
         try {
             $dbh = new PDO($dsn, $user, $pass);        
         }

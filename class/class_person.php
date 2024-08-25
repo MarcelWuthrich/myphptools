@@ -24,10 +24,10 @@ class cl_person
           $dsn  = DSNWORK;  
         }
         
-        $user = 'root';
-        $pass = 'root';
-        $dsn = 'mysql:host=localhost;dbname=vysual';
-
+        $user = USER;
+        $pass = PASSWORD;
+        $dsn = DSN;
+    
         try {
             $dbh = new PDO($dsn, $user, $pass);
         }
@@ -54,9 +54,9 @@ class cl_person
     
   public function getPersonFromPersonalNumber($per_number) {
 
-    $user = 'root';
-    $pass = 'root';
-    $dsn = 'mysql:host=localhost;dbname=vysual';
+    $user = USER;
+    $pass = PASSWORD;
+    $dsn = DSN;
 
 
 

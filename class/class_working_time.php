@@ -24,6 +24,11 @@ class cl_working_time
           $dsn  = DSNWORK;  
         }
 
+        $user = USER;
+        $pass = PASSWORD;
+        $dsn = DSN;
+    
+
         TRY {
             $dbh = new PDO($dsn, $user, $pass);
         }
@@ -69,7 +74,11 @@ class cl_working_time
           $dsn  = DSNWORK;  
         }
 
-        $user = ''
+        $user = USER;
+        $pass = PASSWORD;
+        $dsn = DSN;
+    
+
         TRY {
             $dbh = new PDO($dsn, $user, $pass);
         }

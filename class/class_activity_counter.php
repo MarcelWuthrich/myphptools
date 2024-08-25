@@ -24,6 +24,10 @@ class cl_activity_counter
           $dsn  = DSNWORK;  
         }
 
+        $user = USER;
+        $pass = PASSWORD;
+        $dsn = DSN;
+    
         try {
             $dbh = new PDO($dsn, $user, $pass);
         }
@@ -58,9 +62,9 @@ class cl_activity_counter
     
         
         // Connexion à la DB
-        $user = 'root';
-        $pass = 'root';
-        $dsn = 'mysql:host=localhost;dbname=vysual';
+        $user = USER;
+        $pass = PASSWORD;
+        $dsn = DSN;
     
     
         try {

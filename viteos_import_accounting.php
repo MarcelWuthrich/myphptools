@@ -44,7 +44,7 @@ $myperson = $myperson->getPersonFromPerId($per_id);
 
 
 // Chemin vers votre fichier CSV
-$csv_file = '2024-04-25 Export_Soldes_ProTime.csv';
+$csv_file = '2024-04-25 Export_Soldes_ProTime _short.csv';
 
 // Initialisation du tableau pour stocker les données
 $csv_data = array();
@@ -65,70 +65,109 @@ if (($handle = fopen($csv_file, "r")) !== FALSE) {
     fclose($handle);
     // echo "File read successfully";
 } else {
-    echo "Error opening file";
+    echo "Error opening file<BR>";
 }
 
-$myperson = new cl_person;
 
-// Boucle infinie
-while (true) {
-    // Parcourir chaque ligne du tableau
-    foreach ($csv_data as $line) {
-        // Afficher les valeurs
-
-        
-        $myperson = $myperson->getPersonFromPersonalNumber($line['PersonalNumber']);
-        
-        $mycounter = new cl_activity_counter;
-        switch ($line['Counter']) {
-            
-            case 'Heures BAL':
-                $mycounter = $mycounter->get_activity_counter_from_avc_name('Balance');
-                break;
-
-            case 'Pont':
-                $mycounter = $mycounter->get_activity_counter_from_avc_name('Récupération');
-                break;
-
-            case 'Vacances':
-                $mycounter = $mycounter->get_activity_counter_from_avc_name('Vacances');
-                break;
-
-            case 'Unité Piquet':
-                $mycounter = $mycounter->get_activity_counter_from_avc_name('Piquet cumul');
-                break;
-                    
-        }
-        
-
-
-        echo "PersonalNumber: " . $line['PersonalNumber'] . "<br>";
-        echo "Counter: " . $line['Counter'] . "<br>";
-        echo "Amount: " . $line['Amount'] . "<br>";
-        echo "Date: " . $line['Date'] . "<br><br>";
-
-        $mySQLInsertCommand = "INSERT INTO vtm_activity_counter_accounting ";
-        $mySQLInsertCommand .= "(aca_id,avc_id,per_id,aca_date_time,aca_type,aca_amount,aca_real_amount,aca_comment,aca_created_by,aca_created_date) ";
-        $mySQLInsertCommand .= "VALUES (";
-        $mySQLInsertCommand .= "GetNextId(),"; // aca_id
-        $mySQLInsertCommand .= "'" . $mycounter[0]['avc_id'] . "',"; // avc_id
-        $mySQLInsertCommand .= "'" . $myperson[0]['per_id'] . "',"; // per_id
-        $mySQLInsertCommand .= "STR_TO_DATE('" . $line['Date'] . "', '%d.%m.%Y'),"; // aca_date_time
-        $mySQLInsertCommand .= "'TRANSFER',"; // aca_type
-        $mySQLInsertCommand .= floatval($line['Amount'] * 3600000) . ","; // aca_amount
-        $mySQLInsertCommand .= floatval($line['Amount'] * 3600000) . ","; // aca_real_amount
-        $mySQLInsertCommand .= "'Ajout du solde (" . $mycounter[0]['avc_name'] . ")',"; // aca_comment
-        $mySQLInsertCommand .= "'admin',";  // created by
-        $mySQLInsertCommand .= "NOW()";  // created date
-        $mySQLInsertCommand .= ");";
-        $mySQLInsertCommand .= "<br><br>";
-        echo $mySQLInsertCommand;
-        $mySQLInsertCommand = $mySQLInsertCommand;
+/*
+foreach ($csv_data as $line) {
+    echo "PersonalNumber: " . $line['PersonalNumber'] . "<br>";
+    echo "Counter: " . $line['Counter'] . "<br>";
+    echo "Amount: " . $line['Amount'] . "<br>";
+    echo "Date: " . $line['Date'] . "<br><br>";
     }
+exit("on stoppe !");
+*/
 
-    // Ajouter une petite pause pour éviter que le script ne surconsomme les ressources
-    sleep(1);
+
+$outfilename = "insert_accounting.sql";
+$outfile = fopen($outfilename, "w");
+if ($outfile) {
+    fclose($outfile);
 }
+
+
+// Parcourir chaque ligne du tableau
+foreach ($csv_data as $line) {
+    
+    $myperson = new cl_person;
+
+    try {
+        $myperson = $myperson->getPersonFromPersonalNumber($line['PersonalNumber']);
+    }
+    catch (PDOException $e) {
+        echo "Failed: " . $e->getMessage() . '<BR>';
+    }
+    
+    
+    $mycounter = new cl_activity_counter;
+    switch ($line['Counter']) {
+        
+        case 'Heures BAL':
+            $mycounter = $mycounter->get_activity_counter_from_avc_name('Balance');
+            break;
+
+        case 'Heures SUP':
+            $mycounter = $mycounter->get_activity_counter_from_avc_name('Balance');
+            break;
+
+        case 'Pont':
+            $mycounter = $mycounter->get_activity_counter_from_avc_name('Récupération');
+            break;
+
+        case 'Vacances':
+            $mycounter = $mycounter->get_activity_counter_from_avc_name('Vacances');
+            break;
+
+        case 'Unité Piquet':
+            $mycounter = $mycounter->get_activity_counter_from_avc_name('Piquet cumul');
+            break;
+
+        default:
+            echo "Unknow counter : " . $line['Counter'] . "<BR>";
+            break;
+            exit;
+
+    }
+    
+
+/*
+    echo "PersonalNumber: " . $line['PersonalNumber'] . "<br>";
+    echo "Counter: " . $line['Counter'] . "<br>";
+    echo "Amount: " . $line['Amount'] . "<br>";
+    echo "Date: " . $line['Date'] . "<br><br>";
+*/
+
+    $mySQLInsertCommand = "INSERT INTO vtm_activity_counter_accounting ";
+    $mySQLInsertCommand .= "(aca_id,avc_id,per_id,aca_date_time,aca_type,aca_amount,aca_real_amount,aca_comment,aca_created_by,aca_created_date) ";
+    $mySQLInsertCommand .= "VALUES (";
+    $mySQLInsertCommand .= "GetNextId(),"; // aca_id
+    $mySQLInsertCommand .= "'" . $mycounter[0]['avc_id'] . "',"; // avc_id
+    $mySQLInsertCommand .= "'" . $myperson[0]['per_id'] . "',"; // per_id
+    $mySQLInsertCommand .= "STR_TO_DATE('" . $line['Date'] . "', '%d.%m.%Y'),"; // aca_date_time
+    $mySQLInsertCommand .= "'TRANSFER',"; // aca_type
+    $mySQLInsertCommand .= floatval($line['Amount'] * 3600000) . ","; // aca_amount
+    $mySQLInsertCommand .= floatval($line['Amount'] * 3600000) . ","; // aca_real_amount
+    // $mySQLInsertCommand .= "'Ajout du solde (" . $mycounter[0]['avc_name'] . ")',"; // aca_comment
+    $mySQLInsertCommand .= "'Ajout du solde (" . $line['Counter'] . ")',"; // aca_comment
+    $mySQLInsertCommand .= "'admin',";  // created by
+    $mySQLInsertCommand .= "NOW()";  // created date
+    $mySQLInsertCommand .= ");";
+    echo $mySQLInsertCommand . "<br><br>";
+
+    $outfile = fopen($outfilename, "a+");
+    if ($outfile) {
+        fwrite($outfile, $mySQLInsertCommand . "\n");
+        fclose($outfile);
+    }
+    
+    
+    // flush();  
+
+}
+
+// Ajouter une petite pause pour éviter que le script ne surconsomme les ressources
+// sleep(1);
 
 
 
@@ -141,7 +180,7 @@ while (true) {
 
 <BR><BR>
 
-<input type="submit" value="Import">
+
 
 </form>
 

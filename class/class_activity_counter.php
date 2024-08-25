@@ -53,6 +53,40 @@ class cl_activity_counter
     }
 
     
+    
+    public function get_activity_counter_from_avc_name($avc_name) {
+    
+        
+        // Connexion à la DB
+        $user = 'root';
+        $pass = 'root';
+        $dsn = 'mysql:host=localhost;dbname=vysual';
+    
+    
+        try {
+            $dbh = new PDO($dsn, $user, $pass);
+        }
+        
+        catch (PDOException $e) {
+            // tenter de réessayer la connexion après un certain délai, par exemple
+            echo 'Error by opening connection<BR>';
+        }
+
+        try {
+
+            $sql = 'SELECT * FROM vtm_activity_counter WHERE avc_name = \'' . $avc_name . '\';';
+            $sth = $dbh->query($sql);
+            $rows = $sth->fetchAll();
+            //$sth = null;
+            //$dbh = nulll;
+        }
+        catch (PDOException $e) {
+            echo "Failed: " . $e->getMessage() . '<BR>';
+        }
+        
+        return $rows;
+    }
+
 
         
 

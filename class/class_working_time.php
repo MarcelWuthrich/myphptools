@@ -69,6 +69,7 @@ class cl_working_time
           $dsn  = DSNWORK;  
         }
 
+        $user = ''
         TRY {
             $dbh = new PDO($dsn, $user, $pass);
         }

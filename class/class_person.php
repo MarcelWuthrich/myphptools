@@ -23,13 +23,18 @@ class cl_person
           $pass = PASSWORDWORK;
           $dsn  = DSNWORK;  
         }
+        
+        $user = 'root';
+        $pass = 'root';
+        $dsn = 'mysql:host=localhost;dbname=vysual';
 
         try {
             $dbh = new PDO($dsn, $user, $pass);
         }
         catch (PDOException $e) {
             // tenter de réessayer la connexion après un certain délai, par exemple
-            echo 'Error by opening connection<BR>';
+            echo 'Error by opening connection: ' . $e->getMessage() . '<br>';
+            // echo 'Error by opening connection<BR>';
         }
 
         try {
@@ -47,7 +52,36 @@ class cl_person
     }
 
     
+  public function getPersonFromPersonalNumber($per_number) {
 
+    $user = 'root';
+    $pass = 'root';
+    $dsn = 'mysql:host=localhost;dbname=vysual';
+
+
+
+    try {
+        $dbh = new pdo($dsn,$user,$pass);
+    }
+    catch (PDOException $e) {
+        // tenter de réessayer la connexion après un certain délai, par exemple
+        echo 'Error by opening connection<BR>';
+    }
+
+    try {
+        $sql = 'select per.* from gbl_contact_detail as ctd inner join gbl_person as per on ctd.per_id = per.per_id where ctd.ctd_number = \'' . $per_number . '\' and ctd.ctd_type = \'Professional\'';
+        $sth = $dbh->query($sql);
+        $rows = $sth->fetchAll();
+        //$sth = null;
+        //$dbh = nulll;
+    }
+    catch (PDOException $e) {
+        echo "Failed: " . $e->getMessage() . '<BR>';
+    }
+
+    return $rows;
+
+}
         
 
 

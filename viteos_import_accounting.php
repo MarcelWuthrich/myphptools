@@ -120,13 +120,14 @@ foreach ($csv_data as $line) {
             break;
 
         case 'Unité Piquet':
-            $mycounter = $mycounter->get_activity_counter_from_avc_name('Piquet cumul');
+            $mycounter = $mycounter->get_activity_counter_from_avc_name('Piquet cumul 50h (année en cours)');
             break;
+            //exit;
 
         default:
             echo "Unknow counter : " . $line['Counter'] . "<BR>";
             break;
-            exit;
+            //exit;
 
     }
     
@@ -145,11 +146,11 @@ foreach ($csv_data as $line) {
     $mySQLInsertCommand .= "'" . $mycounter[0]['avc_id'] . "',"; // avc_id
     $mySQLInsertCommand .= "'" . $myperson[0]['per_id'] . "',"; // per_id
     $mySQLInsertCommand .= "STR_TO_DATE('" . $line['Date'] . "', '%d.%m.%Y'),"; // aca_date_time
-    $mySQLInsertCommand .= "'TRANSFER',"; // aca_type
+    $mySQLInsertCommand .= "'USER',"; // aca_type
     $mySQLInsertCommand .= floatval($line['Amount'] * 3600000) . ","; // aca_amount
     $mySQLInsertCommand .= floatval($line['Amount'] * 3600000) . ","; // aca_real_amount
-    // $mySQLInsertCommand .= "'Ajout du solde (" . $mycounter[0]['avc_name'] . ")',"; // aca_comment
-    $mySQLInsertCommand .= "'Ajout du solde (" . $line['Counter'] . ")',"; // aca_comment
+    // $mySQLInsertCommand .= "'Ajout du solde (" . $line['Counter'] . " dans " . $mycounter[0]['avc_name'] . ")',"; // aca_comment
+    $mySQLInsertCommand .= "'Ajout du solde (" . $line['Counter'] . " dans " . $mycounter[0]['avc_name'] . ") : " . floatval($line['Amount']) .  " h',"; // aca_comment
     $mySQLInsertCommand .= "'admin',";  // created by
     $mySQLInsertCommand .= "NOW()";  // created date
     $mySQLInsertCommand .= ");";

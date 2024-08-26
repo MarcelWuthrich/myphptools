@@ -139,6 +139,7 @@ foreach ($csv_data as $line) {
     echo "Date: " . $line['Date'] . "<br><br>";
 */
 
+
     $mySQLInsertCommand = "INSERT INTO vtm_activity_counter_accounting ";
     $mySQLInsertCommand .= "(aca_id,avc_id,per_id,aca_date_time,aca_type,aca_amount,aca_real_amount,aca_comment,aca_created_by,aca_created_date) ";
     $mySQLInsertCommand .= "VALUES (";

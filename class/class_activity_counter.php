@@ -62,7 +62,7 @@ class cl_activity_counter
     
         
         // Connexion à la DB
- 
+        include_once 'constant.php';
         $user = USER;
         $pass = PASSWORD;
         $dsn = DSN;

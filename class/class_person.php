@@ -10,7 +10,11 @@ class cl_person
         
         // Connexion à la DB
         include_once 'constant.php';
+        $user = USER;
+        $pass = PASSWORD;
+        $dsn = DSN;
 
+        /*
         $myip = $_SERVER["SERVER_ADDR"] ;
         $user = USER;
 
@@ -23,11 +27,9 @@ class cl_person
           $pass = PASSWORDWORK;
           $dsn  = DSNWORK;  
         }
+        */
+
         
-        $user = USER;
-        $pass = PASSWORD;
-        $dsn = DSN;
-    
         try {
             $dbh = new PDO($dsn, $user, $pass);
         }
@@ -54,6 +56,8 @@ class cl_person
     
   public function getPersonFromPersonalNumber($per_number) {
 
+    // Connexion à la DB
+    include_once 'constant.php';
     $user = USER;
     $pass = PASSWORD;
     $dsn = DSN;

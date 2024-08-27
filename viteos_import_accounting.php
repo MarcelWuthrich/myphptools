@@ -54,7 +54,7 @@ if (($handle = fopen($csv_file, "r")) !== FALSE) {
     }
     // Fermeture du fichier
     fclose($handle);
-    echo "File read successfully";
+    echo "Input file read successfully";
 } else {
     echo "Error opening file<BR>";
 }
@@ -66,6 +66,7 @@ if ($outfile) {
     fclose($outfile);
 }
 
+echo "Output file created successfully";
 
 // Parcourir chaque ligne du tableau
 foreach ($csv_data as $line) {
@@ -110,6 +111,7 @@ foreach ($csv_data as $line) {
             break;
 
         case 'Unité Piquet':
+            $myactivitycounter = myactivitycounter->get_activity_counter_from_avc_name('Piquet cumul');
             $mytimecode = $mytimecode->get_time_code_with_tco_name('Piquet cumul 50h (année en cours)');
             break;
             //exit;

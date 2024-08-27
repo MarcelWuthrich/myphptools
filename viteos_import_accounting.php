@@ -36,6 +36,7 @@ if (!empty($_POST)) {
 
  // Chemin vers votre fichier CSV
 $csv_file = '2024-08-26 Export_Soldes_ProTime_mini.csv';
+//$csv_file = '2024-08-26 Export_Soldes_ProTime.csv';
 
 // Initialisation du tableau pour stocker les données
 $csv_data = array();
@@ -54,7 +55,7 @@ if (($handle = fopen($csv_file, "r")) !== FALSE) {
     }
     // Fermeture du fichier
     fclose($handle);
-    echo "Input file read successfully";
+    echo "Input file read successfully<BR>";
 } else {
     echo "Error opening file<BR>";
 }
@@ -66,7 +67,7 @@ if ($outfile) {
     fclose($outfile);
 }
 
-echo "Output file created successfully";
+echo "Output file created successfully<BR>";
 
 // Parcourir chaque ligne du tableau
 foreach ($csv_data as $line) {
@@ -89,29 +90,30 @@ foreach ($csv_data as $line) {
     
 
     switch ($line['Counter']) {
+    
         
         case 'Heures BAL':
-            $myactivitycounter = myactivitycounter->get_activity_counter_from_avc_name('Balance');
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Balance');
             $mytimecode = $mytimecode->get_time_code_with_tco_name('Balance (compteur)');
             break;
 
         case 'Heures SUP':
-            $myactivitycounter = myactivitycounter->get_activity_counter_from_avc_name('Balance');
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Balance');
             $mytimecode = $mytimecode->get_time_code_with_tco_name('Balance (compteur)');
             break;
 
         case 'Pont':
-            $myactivitycounter = myactivitycounter->get_activity_counter_from_avc_name('Récupération');
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Récupération');
             $mytimecode = $mytimecode->get_time_code_with_tco_name('Récupération (système)');
             break;
 
         case 'Vacances':
-            $myactivitycounter = myactivitycounter->get_activity_counter_from_avc_name('Vacances');
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Vacances');
             $mytimecode = $mytimecode->get_time_code_with_tco_name('Vacances');
             break;
 
         case 'Unité Piquet':
-            $myactivitycounter = myactivitycounter->get_activity_counter_from_avc_name('Piquet cumul');
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Piquet cumul 50h (année en cours)');
             $mytimecode = $mytimecode->get_time_code_with_tco_name('Piquet cumul 50h (année en cours)');
             break;
             //exit;
@@ -123,12 +125,32 @@ foreach ($csv_data as $line) {
 
     }
     
-
+    $avc_id = $myactivitycounter[0]['avc_id'];
+    $tco_id = $mytimecode[0]['tco_id'];
+    $per_id = $myperson[0]['per_id'];
+    $myworkingtime = $myworkingtime->get_active_wkt_from_per_id($per_id);
+    $wkt_id = $myworkingtime[0]['wkt_id'];
+    $aca_date_time = DateTime::createFromFormat('d.m.Y', $line['Date'])->format('Y-m-d');
+    $mytimesheet = $mytimesheet->getTimeSheetFromDatePerId($per_id,$aca_date_time);
+    $tst_theoretical_todo = $mytimesheet[0]['tst_theoretical_todo'];
+    $amount_in_hour = intval(floatval($line['Amount'] * 3600000));
+    $amount_in_day = intval(floatval($line['Amount'] * $tst_theoretical_todo));
+    if ($line['Counter'] == 'Vacances') {
+        $amount = $amount_in_day;
+        $aca_comment = "Ajout du solde de " . $line['Counter'] . " dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / $tst_theoretical_todo ), 2) . " jour(s)";
+    } else {
+        $amount = $amount_in_hour;
+        $aca_comment = "Ajout du solde de " . $line['Counter'] . " dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / 3600000),2) . " heure(s)";
+    }
     
-    $mytest = DateTime::createFromFormat('d.m.Y', $line['Date'])->format('Y-m-d');
-    $tst_theoretical_todo = $mytimesheet->getTimeSheetFromDatePerId($myperson[0]['per_id'],$mytest);
-    
 
+
+
+
+
+    // $aca_comment = "'Ajout du solde (" . $line['Counter'] . " dans " . $mytimecode[0]['tco_name'] . ") : " . floatval($line['Amount']) .  " h',"; // aca_comment
+
+   
     $mySQLInsertCommand = "INSERT INTO vtm_activity_counter_accounting (";
     $mySQLInsertCommand .= "aca_id,";
     $mySQLInsertCommand .= "avc_id,";
@@ -146,22 +168,19 @@ foreach ($csv_data as $line) {
     
     $mySQLInsertCommand .= "VALUES (";
 
-    $mySQLInsertCommand .= "GetNextId(),";          // aca_id
-    $mySQLInsertCommand .= "'" . $mytimecode[0]['avc_id'] . "',"; // avc_id
-    $mySQLInsertCommand .= "'" . $myperson[0]['per_id'] . "',"; // per_id
-    $mySQLInsertCommand .= "'" . $mytimecode[0]['tco_id'] . "',"; // tco_id
-    $per_id = $myperson[0]['per_id'];
-    $wkt  = $myworkingtime->get_active_wkt_from_per_id($per_id);
-    $mySQLInsertCommand .= "'" . $wkt[0]['wkt_id'] . "',"; // wkt_id
-    $mySQLInsertCommand .= "STR_TO_DATE('" . $line['Date'] . "', '%d.%m.%Y'),"; // aca_date_time
-    $mySQLInsertCommand .= "'USER',"; // aca_type
-    $mySQLInsertCommand .= floatval($line['Amount'] * 3600000) . ","; // aca_amount
-    $mySQLInsertCommand .= floatval($line['Amount'] * 3600000) . ","; // aca_real_amount
-    $mySQLInsertCommand .= "GetNextId(),"; // aca_series
-    // $mySQLInsertCommand .= "'Ajout du solde (" . $line['Counter'] . " dans " . $mycounter[0]['avc_name'] . ")',"; // aca_comment
-    $mySQLInsertCommand .= "'Ajout du solde (" . $line['Counter'] . " dans " . $mytimecode[0]['tco_name'] . ") : " . floatval($line['Amount']) .  " h',"; // aca_comment
-    $mySQLInsertCommand .= "'admin',";  // created by
-    $mySQLInsertCommand .= "NOW()";  // created date
+    $mySQLInsertCommand .= "GetNextId(),";              // aca_id
+    $mySQLInsertCommand .= "'" . $avc_id . "',";        // avc_id
+    $mySQLInsertCommand .= "'" . $per_id . "',";        // per_id
+    $mySQLInsertCommand .= "'" . $tco_id . "',";        // tco_id
+    $mySQLInsertCommand .= "'" . $wkt_id . "',";        // wkt_id
+    $mySQLInsertCommand .= "'" . $aca_date_time . "',"; // aca_date_time
+    $mySQLInsertCommand .= "'USER',";                   // aca_type
+    $mySQLInsertCommand .= $amount . ",";               // aca_amount
+    $mySQLInsertCommand .= $amount . ",";               // aca_real_amount
+    $mySQLInsertCommand .= "GetNextId(),";              // aca_series
+    $mySQLInsertCommand .= "'" . $aca_comment . "',";   // aca_comment
+    $mySQLInsertCommand .= "'admin',";                  // created by
+    $mySQLInsertCommand .= "NOW()";                     // created date
     $mySQLInsertCommand .= ");";
     echo $mySQLInsertCommand . "<br><br>";
 
@@ -177,6 +196,7 @@ foreach ($csv_data as $line) {
 
 
 echo "export successfully terminated<BR>";
+echo date('Y-m-d H:i:s') . "<BR>";
 
 
 

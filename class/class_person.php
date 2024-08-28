@@ -58,10 +58,23 @@ class cl_person
 
     // Connexion à la DB
     include_once 'constant.php';
+
+    $myip = $_SERVER["SERVER_ADDR"] ;
+    $user = USER;
+    if (($myip == IP1HOME) or ($myip == IP2HOME)) {
+          $pass = PASSWORDHOME;
+          $dsn  = DSNHOME;
+        }
+    if (($myip == IP1WORK) or ($myip == IP2WORK)) {
+        $pass = PASSWORDWORK;
+        $dsn  = DSNWORK;  
+    }
+
+    /*
     $user = USER;
     $pass = PASSWORD;
     $dsn = DSN;
-
+*/
 
 
     try {

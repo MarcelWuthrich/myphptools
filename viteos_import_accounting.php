@@ -33,6 +33,11 @@ if (!empty($_POST)) {
     $_POST = $_POST;
 }
 
+echo "<BR>Begin export<BR>";
+echo date('Y-m-d H:i:s') . "<BR><BR>";
+
+
+
 
  // Chemin vers votre fichier CSV
 $csv_file = '2024-08-26 Export_Soldes_ProTime_mini.csv';
@@ -67,8 +72,13 @@ if ($outfile) {
     fclose($outfile);
 }
 
+$previous_per_id='';
+
+$outfile = fopen($outfilename, "a+");
+
 echo "Output file created successfully<BR>";
 
+echo "<BR>";
 // Parcourir chaque ligne du tableau
 foreach ($csv_data as $line) {
     
@@ -78,8 +88,7 @@ foreach ($csv_data as $line) {
     $mytimesheet = new cl_time_sheet;
     $myworkingtime = new cl_working_time;
 
-
-
+    
     try {
         $myperson = $myperson->getPersonFromPersonalNumber($line['PersonalNumber']);
     }
@@ -128,6 +137,18 @@ foreach ($csv_data as $line) {
     $avc_id = $myactivitycounter[0]['avc_id'];
     $tco_id = $mytimecode[0]['tco_id'];
     $per_id = $myperson[0]['per_id'];
+    $per_name = $myperson[0]['per_name'];
+    $per_firstname = $myperson[0]['per_firstname'];
+
+    if ($per_id <> $previous_per_id) {
+        //echo $per_name . ' ' . $per_firstname . '(per_id = ' . $per_id . ')<BR>';
+        //$mytitle = '// ' . $per_name . ' ' . $per_firstname . ' (per_id : ' . $per_id . ')';
+        //if ($outfile) fwrite($outfile, "\n" . $mytitle . "\n");
+    }
+    echo $per_name . ' ' . $per_firstname . '(per_id : ' . $per_id . ') (user_name : ' . $line['PersonalNumber'] . ') (counter :  ' . $line['Counter'] . ') (amount : ' . $line['Amount'] . ')<BR>';
+    $mytitle = '// ' . $per_name . ' ' . $per_firstname . ' : ' . $line['Counter'];
+    if ($outfile) fwrite($outfile, "\n" . $mytitle . "\n");
+
     $myworkingtime = $myworkingtime->get_active_wkt_from_per_id($per_id);
     $wkt_id = $myworkingtime[0]['wkt_id'];
     $aca_date_time = DateTime::createFromFormat('d.m.Y', $line['Date'])->format('Y-m-d');
@@ -135,21 +156,20 @@ foreach ($csv_data as $line) {
     $tst_theoretical_todo = $mytimesheet[0]['tst_theoretical_todo'];
     $amount_in_hour = intval(floatval($line['Amount'] * 3600000));
     $amount_in_day = intval(floatval($line['Amount'] * $tst_theoretical_todo));
+    
     if ($line['Counter'] == 'Vacances') {
+        if ($tst_theoretical_todo == 0) {
+            echo 'error : tst_theoretical_todo = 0 --> cannot convert days in hours !!!<BR>';
+            continue;
+        }
         $amount = $amount_in_day;
         $aca_comment = "Ajout du solde de " . $line['Counter'] . " dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / $tst_theoretical_todo ), 2) . " jour(s)";
     } else {
         $amount = $amount_in_hour;
         $aca_comment = "Ajout du solde de " . $line['Counter'] . " dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / 3600000),2) . " heure(s)";
-    }
+    }   
     
-
-
-
-
-
-    // $aca_comment = "'Ajout du solde (" . $line['Counter'] . " dans " . $mytimecode[0]['tco_name'] . ") : " . floatval($line['Amount']) .  " h',"; // aca_comment
-
+    
    
     $mySQLInsertCommand = "INSERT INTO vtm_activity_counter_accounting (";
     $mySQLInsertCommand .= "aca_id,";
@@ -182,20 +202,22 @@ foreach ($csv_data as $line) {
     $mySQLInsertCommand .= "'admin',";                  // created by
     $mySQLInsertCommand .= "NOW()";                     // created date
     $mySQLInsertCommand .= ");";
-    echo $mySQLInsertCommand . "<br><br>";
 
-    $outfile = fopen($outfilename, "a+");
-    if ($outfile) {
-        fwrite($outfile, $mySQLInsertCommand . "\n");
-        fclose($outfile);
-    }
+   
     
     
+
+    if ($outfile) fwrite($outfile, $mySQLInsertCommand . "\n");
+        
+    $previous_per_id = $per_id;
+    
+ 
  
 }
 
+fclose($outfile);
 
-echo "export successfully terminated<BR>";
+echo "<BR>export successfully terminated<BR>";
 echo date('Y-m-d H:i:s') . "<BR>";
 
 

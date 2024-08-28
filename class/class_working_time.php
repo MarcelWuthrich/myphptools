@@ -10,23 +10,18 @@ class cl_working_time
         
         // Connexion à la DB
         include_once 'constant.php';
-
         $myip = $_SERVER["SERVER_ADDR"] ;
         $user = USER;
-
         if (($myip == IP1HOME) or ($myip == IP2HOME)) {
-          $pass = PASSWORDHOME;
-          $dsn  = DSNHOME;
-        }
-
+              $pass = PASSWORDHOME;
+              $dsn  = DSNHOME;
+            }
         if (($myip == IP1WORK) or ($myip == IP2WORK)) {
-          $pass = PASSWORDWORK;
-          $dsn  = DSNWORK;  
+            $pass = PASSWORDWORK;
+            $dsn  = DSNWORK;  
         }
-
-        $user = USER;
-        $pass = PASSWORD;
-        $dsn = DSN;
+    
+    
     
 
         TRY {
@@ -60,23 +55,18 @@ class cl_working_time
         
         // Connexion à la DB
         include_once 'constant.php';
-
         $myip = $_SERVER["SERVER_ADDR"] ;
         $user = USER;
-
         if (($myip == IP1HOME) or ($myip == IP2HOME)) {
-          $pass = PASSWORDHOME;
-          $dsn  = DSNHOME;
-        }
-
+              $pass = PASSWORDHOME;
+              $dsn  = DSNHOME;
+            }
         if (($myip == IP1WORK) or ($myip == IP2WORK)) {
-          $pass = PASSWORDWORK;
-          $dsn  = DSNWORK;  
+            $pass = PASSWORDWORK;
+            $dsn  = DSNWORK;  
         }
-
-        $user = USER;
-        $pass = PASSWORD;
-        $dsn = DSN;
+    
+    
     
         TRY {
             $dbh = new PDO($dsn, $user, $pass);
@@ -114,23 +104,18 @@ class cl_working_time
         
         // Connexion à la DB
         include_once 'constant.php';
-
         $myip = $_SERVER["SERVER_ADDR"] ;
         $user = USER;
-
         if (($myip == IP1HOME) or ($myip == IP2HOME)) {
-          $pass = PASSWORDHOME;
-          $dsn  = DSNHOME;
-        }
-
+              $pass = PASSWORDHOME;
+              $dsn  = DSNHOME;
+            }
         if (($myip == IP1WORK) or ($myip == IP2WORK)) {
-          $pass = PASSWORDWORK;
-          $dsn  = DSNWORK;  
+            $pass = PASSWORDWORK;
+            $dsn  = DSNWORK;  
         }
-
-        $user = USER;
-        $pass = PASSWORD;
-        $dsn = DSN;
+    
+    
     
 
         TRY {

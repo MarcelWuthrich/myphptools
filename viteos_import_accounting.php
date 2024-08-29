@@ -21,6 +21,7 @@
 
 <?php
 
+
 // include 'class/class_display.php';
 include 'class/class_person.php';
 include 'class/class_working_time.php';
@@ -96,7 +97,6 @@ foreach ($csv_data as $line) {
         echo "Failed: " . $e->getMessage() . '<BR>';
     }
     
-    
 
     switch ($line['Counter']) {
     
@@ -140,17 +140,31 @@ foreach ($csv_data as $line) {
     $per_name = $myperson[0]['per_name'];
     $per_firstname = $myperson[0]['per_firstname'];
 
-    if ($per_id <> $previous_per_id) {
-        //echo $per_name . ' ' . $per_firstname . '(per_id = ' . $per_id . ')<BR>';
-        //$mytitle = '// ' . $per_name . ' ' . $per_firstname . ' (per_id : ' . $per_id . ')';
-        //if ($outfile) fwrite($outfile, "\n" . $mytitle . "\n");
-    }
-    echo $per_name . ' ' . $per_firstname . '(per_id : ' . $per_id . ') (user_name : ' . $line['PersonalNumber'] . ') (counter :  ' . $line['Counter'] . ') (amount : ' . $line['Amount'] . ')<BR>';
+   
+    echo $per_name . ' ' . $per_firstname . ' (per_id : ' . $per_id . ') (user_name : ' . $line['PersonalNumber'] . ') (counter :  ' . $line['Counter'] . ') (amount : ' . $line['Amount'] . ')<BR>';
     $mytitle = '// ' . $per_name . ' ' . $per_firstname . ' : ' . $line['Counter'];
     if ($outfile) fwrite($outfile, "\n" . $mytitle . "\n");
 
+    //si le solde est 0, on ne fait rien
+    if ($line['Amount'] == 0) {
+        echo $per_name . ' ' . $per_firstname . ' : ' . $line['Counter'] . ' value is 0, nothing done<BR>';
+        continue;
+    }
+
     $myworkingtime = $myworkingtime->get_active_wkt_from_per_id($per_id);
     $wkt_id = $myworkingtime[0]['wkt_id'];
+    $wkt_parent_id = $myworkingtime[0]['parent_id'];
+    $myparentworkingtime = new cl_working_time;
+    $myparentworkingtime = $myparentworkingtime->get__wkt_from_wkt_id($wkt_parent_id);
+    $wkt_model_name = $myparentworkingtime[0]['wkt_model_name'];
+
+    //si c'est un modèle de contrat pour les intérimaire et que ce sont les vacances ou le pont, on ne fait rien.
+    if (stripos($wkt_model_name, 'intérimaire') !== false && (($line['Counter'] == 'Pont') || ($line['Counter'] == 'Vacances'))) {
+        echo $per_name . ' ' . $per_firstname . ' : ' . $line['Counter'] . ' not for temporary employee, nothing done<BR>';
+        continue;
+    }
+        
+
     $aca_date_time = DateTime::createFromFormat('d.m.Y', $line['Date'])->format('Y-m-d');
     $mytimesheet = $mytimesheet->getTimeSheetFromDatePerId($per_id,$aca_date_time);
     $tst_theoretical_todo = $mytimesheet[0]['tst_theoretical_todo'];

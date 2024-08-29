@@ -10,24 +10,17 @@ class cl_person
         
         // Connexion à la DB
         include_once 'constant.php';
-        $user = USER;
-        $pass = PASSWORD;
-        $dsn = DSN;
-
-        /*
+        // Define database connexion
         $myip = $_SERVER["SERVER_ADDR"] ;
         $user = USER;
-
-        if (($myip == IP1HOME) or ($myip == IP2HOME)) {
-          $pass = PASSWORDHOME;
-          $dsn  = DSNHOME;
+        if ($myip == IP1HOME) {
+            $pass = PASSWORDHOME;
+            $dsn  = DSNHOME;
         }
-
-        if (($myip == IP1WORK) or ($myip == IP2WORK)) {
-          $pass = PASSWORDWORK;
-          $dsn  = DSNWORK;  
+        if (($myip == IP1WORK)) {
+            $pass = PASSWORDWORK;
+            $dsn  = DSNWORK;  
         }
-        */
 
         
         try {
@@ -56,25 +49,19 @@ class cl_person
     
   public function getPersonFromPersonalNumber($per_number) {
 
-    // Connexion à la DB
-    include_once 'constant.php';
-
-    $myip = $_SERVER["SERVER_ADDR"] ;
-    $user = USER;
-    if (($myip == IP1HOME) or ($myip == IP2HOME)) {
-          $pass = PASSWORDHOME;
-          $dsn  = DSNHOME;
+        // Connexion à la DB
+        include_once 'constant.php';
+        // Define database connexion
+        $myip = $_SERVER["SERVER_ADDR"] ;
+        $user = USER;
+        if ($myip == IP1HOME) {
+            $pass = PASSWORDHOME;
+            $dsn  = DSNHOME;
         }
-    if (($myip == IP1WORK) or ($myip == IP2WORK)) {
-        $pass = PASSWORDWORK;
-        $dsn  = DSNWORK;  
-    }
-
-    /*
-    $user = USER;
-    $pass = PASSWORD;
-    $dsn = DSN;
-*/
+        if (($myip == IP1WORK)) {
+            $pass = PASSWORDWORK;
+            $dsn  = DSNWORK;  
+        }
 
 
     try {

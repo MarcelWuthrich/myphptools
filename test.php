@@ -23,20 +23,36 @@
 <?php
 {
 
-        include_once 'constant.php';
+  include_once 'constant.php';
 
-        $myip = $_SERVER["SERVER_ADDR"] ;
-        $user = USER;
+  $myip = $_SERVER["SERVER_ADDR"] ;
+  echo '$myip : ' . $myip . '<BR>';
 
-        if (($myip == IP1HOME) or ($myip == IP2HOME)) {
-          $pass = PASSWORDHOME;
-          $dsn  = DSNHOME;
-        }
+  $user = USER;
+  echo '$user : ' . $user . '<BR>';
 
-        if (($myip == IP1WORK)) {
-          $pass = PASSWORDWORK;
-          $dsn  = DSNWORK;  
-        }
+  $pass = PASSWORDHOME;
+  echo 'password at home : ' . $pass . '<BR>';
+
+  $dsn = DSNHOME;
+  echo 'DSN at home : ' . $dsn . '<BR>';
+
+  $pass = PASSWORDWORK;
+  echo 'password at work : ' . $pass . '<BR>';
+
+  $dsn = DSNWORK;
+  echo 'DSN at work : ' . $dsn . '<BR>';
+
+  // Define database connexion
+  $myip = $_SERVER["SERVER_ADDR"] ;
+  if ($myip == IP1HOME) {
+    $pass = PASSWORDHOME;
+    $dsn  = DSNHOME;
+  }
+  if (($myip == IP1WORK)) {
+    $pass = PASSWORDWORK;
+    $dsn  = DSNWORK;  
+  }
 
         try {
 
@@ -57,7 +73,7 @@
         catch (PDOException $e) {
             echo "Failed: " . $e->getMessage() . '<BR>';
         }
-      echo $rows[1]['ety_name'];
+      echo '<BR><BR>Entity from db : ' . $rows[1]['ety_name'] . '<BR><BR>';
 
     
 }

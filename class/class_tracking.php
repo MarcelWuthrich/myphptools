@@ -10,17 +10,17 @@ class cl_tracking
         
         // Connexion à la DB
         include_once 'constant.php';
+        // Define database connexion
         $myip = $_SERVER["SERVER_ADDR"] ;
         $user = USER;
-        if (($myip == IP1HOME) or ($myip == IP2HOME)) {
-              $pass = PASSWORDHOME;
-              $dsn  = DSNHOME;
-            }
-        if (($myip == IP1WORK) or ($myip == IP2WORK)) {
+        if ($myip == IP1HOME) {
+            $pass = PASSWORDHOME;
+            $dsn  = DSNHOME;
+        }
+        if (($myip == IP1WORK)) {
             $pass = PASSWORDWORK;
             $dsn  = DSNWORK;  
         }
-    
     
     
 

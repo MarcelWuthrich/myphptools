@@ -10,13 +10,14 @@ class cl_working_time
         
         // Connexion à la DB
         include_once 'constant.php';
+        // Define database connexion
         $myip = $_SERVER["SERVER_ADDR"] ;
         $user = USER;
-        if (($myip == IP1HOME) or ($myip == IP2HOME)) {
-              $pass = PASSWORDHOME;
-              $dsn  = DSNHOME;
-            }
-        if (($myip == IP1WORK) or ($myip == IP2WORK)) {
+        if ($myip == IP1HOME) {
+            $pass = PASSWORDHOME;
+            $dsn  = DSNHOME;
+        }
+        if (($myip == IP1WORK)) {
             $pass = PASSWORDWORK;
             $dsn  = DSNWORK;  
         }
@@ -52,20 +53,20 @@ class cl_working_time
     
     public function get_active_per_id_at_one_date($this_date) {
     
-        
+
         // Connexion à la DB
         include_once 'constant.php';
+        // Define database connexion
         $myip = $_SERVER["SERVER_ADDR"] ;
         $user = USER;
-        if (($myip == IP1HOME) or ($myip == IP2HOME)) {
-              $pass = PASSWORDHOME;
-              $dsn  = DSNHOME;
-            }
-        if (($myip == IP1WORK) or ($myip == IP2WORK)) {
+        if ($myip == IP1HOME) {
+            $pass = PASSWORDHOME;
+            $dsn  = DSNHOME;
+        }
+        if (($myip == IP1WORK)) {
             $pass = PASSWORDWORK;
             $dsn  = DSNWORK;  
         }
-    
     
     
         TRY {
@@ -104,13 +105,14 @@ class cl_working_time
         
         // Connexion à la DB
         include_once 'constant.php';
+        // Define database connexion
         $myip = $_SERVER["SERVER_ADDR"] ;
         $user = USER;
-        if (($myip == IP1HOME) or ($myip == IP2HOME)) {
-              $pass = PASSWORDHOME;
-              $dsn  = DSNHOME;
-            }
-        if (($myip == IP1WORK) or ($myip == IP2WORK)) {
+        if ($myip == IP1HOME) {
+            $pass = PASSWORDHOME;
+            $dsn  = DSNHOME;
+        }
+        if (($myip == IP1WORK)) {
             $pass = PASSWORDWORK;
             $dsn  = DSNWORK;  
         }
@@ -144,7 +146,52 @@ class cl_working_time
         return $rows;
     }
 
-  
+
+    public function get__wkt_from_wkt_id($wkt_id) {
+    
+        
+        // Connexion à la DB
+        include_once 'constant.php';
+        // Define database connexion
+        $myip = $_SERVER["SERVER_ADDR"] ;
+        $user = USER;
+        if ($myip == IP1HOME) {
+            $pass = PASSWORDHOME;
+            $dsn  = DSNHOME;
+        }
+        if (($myip == IP1WORK)) {
+            $pass = PASSWORDWORK;
+            $dsn  = DSNWORK;  
+        }
+
+    
+    
+
+        TRY {
+            $dbh = new PDO($dsn, $user, $pass);
+        }
+        catch (PDOException $e) {
+            // tenter de réessayer la connexion après un certain délai, par exemple
+            echo 'Error by opening connection<BR>';
+        }
+
+        try {
+          
+            $sql = 'SELECT * FROM vtm_working_time WHERE wkt_id = \'' . $wkt_id . '\';';
+        
+
+            $sth = $dbh->query($sql);
+            $rows = $sth->fetchAll();
+            //$sth = null;
+            //$dbh = nulll;
+        }
+        catch (PDOException $e) {
+            echo "Failed: " . $e->getMessage() . '<BR>';
+        }
+        
+        return $rows;
+    }
+
         
 
 

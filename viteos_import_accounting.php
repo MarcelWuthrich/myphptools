@@ -145,7 +145,7 @@ foreach ($csv_data as $line) {
 
    
     echo $per_name . ' ' . $per_firstname . ' (per_id : ' . $per_id . ') (user_name : ' . $line['PersonalNumber'] . ') (counter :  ' . $line['Counter'] . ') (amount : ' . $line['Amount'] . ')<BR>';
-    $mytitle = '// ' . $per_name . ' ' . $per_firstname . ' : ' . $line['Counter'];
+    $mytitle = '-- ' . $per_name . ' ' . $per_firstname . ' : ' . $line['Counter'];
     if ($outfile) fwrite($outfile, "\n" . $mytitle . "\n");
 
     //si le solde est 0, on ne fait rien

@@ -10,18 +10,20 @@ class cl_time_sheet
         
         // Connexion à la DB
         include_once 'constant.php';
+
         // Define database connexion
-        $myip = $_SERVER["SERVER_ADDR"] ;
+        $myhost = $_SERVER["SERVER_NAME"] ;
         $user = USER;
-        if ($myip == IP1HOME) {
+        if ($myhost == HOSTNAMEHOME) {
             $pass = PASSWORDHOME;
             $dsn  = DSNHOME;
         }
-        if (($myip == IP1WORK)) {
+        if (($myhost == HOSTNAMEWORK)) {
             $pass = PASSWORDWORK;
             $dsn  = DSNWORK;  
         }
     
+
     
 
         try {

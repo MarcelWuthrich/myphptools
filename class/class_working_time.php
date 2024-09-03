@@ -69,6 +69,11 @@ class cl_working_time
             $dsn  = DSNWORK;  
         }
     
+
+    
+
+    
+    
     
     
         TRY {
@@ -120,6 +125,7 @@ class cl_working_time
             $dsn  = DSNWORK;  
         }
     
+
     
     
 
@@ -169,7 +175,6 @@ class cl_working_time
         }
     
 
-    
     
 
         TRY {

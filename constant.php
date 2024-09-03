@@ -11,7 +11,7 @@
     define("IP1HOME","127.0.0.1");
     define("IP1WORK","192.168.240.5");
 
-	define("HOSTNAMEHOME","localhost");
+	define("HOSTNAMEHOME","localhost@athome");
 	define("HOSTNAMEWORK","php-docker.local");
 	
 

@@ -34,6 +34,9 @@ if (!empty($_POST)) {
     $_POST = $_POST;
 }
 
+
+//echo '$_SERVER["SERVER_ADDR"]' . $_SERVER["SERVER_ADDR"] . '<BR>';
+
 echo "<BR>Begin export<BR>";
 echo date('Y-m-d H:i:s') . "<BR><BR>";
 
@@ -41,8 +44,8 @@ echo date('Y-m-d H:i:s') . "<BR><BR>";
 
 
  // Chemin vers votre fichier CSV
-$csv_file = '2024-08-26 Export_Soldes_ProTime_mini.csv';
-//$csv_file = '2024-08-26 Export_Soldes_ProTime.csv';
+$csv_file = '2024-08-31 Export_Soldes_ProTime_mini.csv';
+//$csv_file = '2024-08-31 Export_Soldes_ProTime.csv';
 
 // Initialisation du tableau pour stocker les données
 $csv_data = array();

@@ -23,10 +23,16 @@
 <?php
 {
 
+// phpinfo();
+
+// exit;
   include_once 'constant.php';
 
   $myip = $_SERVER["SERVER_ADDR"] ;
   echo '$myip : ' . $myip . '<BR>';
+
+  $myname = $_SERVER["SERVER_NAME"] ;
+  echo '$myname : ' . $myname . '<BR>';
 
   $user = USER;
   echo '$user : ' . $user . '<BR>';

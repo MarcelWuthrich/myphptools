@@ -82,14 +82,13 @@ $outfile = fopen($outfilename, "a+");
 
 echo "Output file created successfully<BR>";
 
-echo "<BR>";
 // Parcourir chaque ligne du tableau
 foreach ($csv_data as $line) {
     
     $myperson = new cl_person;
     $mytimecode = new cl_time_code;
     $myactivitycounter = new cl_activity_counter;
-    $mytimesheet = new cl_time_sheet;
+    //$mytimesheet = new cl_time_sheet;
     $myworkingtime = new cl_working_time;
 
     
@@ -143,6 +142,7 @@ foreach ($csv_data as $line) {
     $per_name = $myperson[0]['per_name'];
     $per_firstname = $myperson[0]['per_firstname'];
 
+    if ($previous_per_id <> $per_id) echo '<BR>';
    
     echo $per_name . ' ' . $per_firstname . ' (per_id : ' . $per_id . ') (user_name : ' . $line['PersonalNumber'] . ') (counter :  ' . $line['Counter'] . ') (amount : ' . $line['Amount'] . ')<BR>';
     $mytitle = '-- ' . $per_name . ' ' . $per_firstname . ' : ' . $line['Counter'];
@@ -169,18 +169,19 @@ foreach ($csv_data as $line) {
         
 
     $aca_date_time = DateTime::createFromFormat('d.m.Y', $line['Date'])->format('Y-m-d');
-    $mytimesheet = $mytimesheet->getTimeSheetFromDatePerId($per_id,$aca_date_time);
-    $tst_theoretical_todo = $mytimesheet[0]['tst_theoretical_todo'];
+    $todo_per_day = $myworkingtime[0]['wkt_weekly_hours'] * $myworkingtime[0]['wkt_activity_rate'] / 100 / 5;
+    //$mytimesheet = $mytimesheet->getTimeSheetFromDatePerId($per_id,$aca_date_time);
+    //$tst_theoretical_todo = $mytimesheet[0]['tst_theoretical_todo'];
     $amount_in_hour = intval(floatval($line['Amount'] * 3600000));
-    $amount_in_day = intval(floatval($line['Amount'] * $tst_theoretical_todo));
+    $amount_in_day = intval(floatval($line['Amount'] * $todo_per_day));
     
     if ($line['Counter'] == 'Vacances') {
-        if ($tst_theoretical_todo == 0) {
-            echo 'error : tst_theoretical_todo = 0 --> cannot convert days in hours !!!<BR>';
+        if ($todo_per_day == 0) {
+            echo 'error : todo_per_day = 0 --> cannot convert days in hours !!!<BR>';
             continue;
         }
         $amount = $amount_in_day;
-        $aca_comment = "Ajout du solde de " . $line['Counter'] . " dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / $tst_theoretical_todo ), 2) . " jour(s)";
+        $aca_comment = "Ajout du solde de " . $line['Counter'] . " dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / $todo_per_day ), 2) . " jour(s)";
     } else {
         $amount = $amount_in_hour;
         $aca_comment = "Ajout du solde de " . $line['Counter'] . " dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / 3600000),2) . " heure(s)";

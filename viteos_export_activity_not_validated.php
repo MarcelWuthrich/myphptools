@@ -64,8 +64,19 @@ $myOutpuLine .= 'Validation;';
 if ($outfile) fwrite($outfile, $myOutpuLine . "\n");   
 
 
+$outfilenameSQL = "viteos.sql";
+$outfileSQL = fopen($outfilenameSQL, "w");
+if ($outfileSQL) {
+    fwrite($outfileSQL, "\xEF\xBB\xBF");  // <<< BOM UTF-8
+    fclose($outfileSQL);
+}
+
+$outfileSQL = fopen($outfilenameSQL, "a+");
+
+
+
 try {
-    $myactivities = $myactivitysheet->getActivity('2025-01-06','2025-01-06');
+    $myactivities = $myactivitysheet->getActivity('2025-01-14','2025-01-14');
     foreach ($myactivities as $myactivity) {
 
        
@@ -118,7 +129,22 @@ try {
             //echo 'Validé par ' . $myValidators[0]['vas_created_by'] . ' le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ';';
             $myOutpuLine .= 'Validé le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ' par ' . $myValidators[0]['vas_created_by'] . ';';
         }
+
+        if (count($myValidators) == 0) {
+            $myOutpuLineSQL = 'INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES ';
+            $myOutpuLineSQL .= '(getnextid(),\'' . $myactivity['ast_id'] . '\',\'' . $myactivity['per_id'] .  '\',1,\'validation auto\',\'admin\',NOW());';
+            if ($outfileSQL) fwrite($outfileSQL, $myOutpuLineSQL . "\n");   
+            $myOutpuLineSQL = 'INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES ';
+            $myOutpuLineSQL .= '(getnextid(),\'' . $myactivity['ast_id'] . '\',\'' . $myactivity['per_id'] .  '\',1,\'validation auto\',\'admin\',NOW());';
+                }
+        else {
+            $myOutpuLineSQL = 'INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES ';
+            $myOutpuLineSQL .= '(getnextid(),\'' . $myactivity['ast_id'] . '\',\'' . $myactivity['per_id'] .  '\',1,\'validation auto\',\'admin\',NOW());';    
+        }
+
+
         if ($outfile) fwrite($outfile, $myOutpuLine . "\n");   
+        if ($outfileSQL) fwrite($outfileSQL, $myOutpuLineSQL . "\n");   
 
     }
 }
@@ -129,6 +155,7 @@ catch (PDOException $e) {
 
 
 fclose($outfile);
+fclose($outfileSQL);
 
 
 echo "<BR>export successfully terminated<BR>";

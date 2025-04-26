@@ -76,7 +76,7 @@ $outfileSQL = fopen($outfilenameSQL, "a+");
 
 
 try {
-    $myactivities = $myactivitysheet->getActivity('2025-01-14','2025-01-14');
+    $myactivities = $myactivitysheet->getActivity('2025-01-01','2025-01-31');
     foreach ($myactivities as $myactivity) {
 
        

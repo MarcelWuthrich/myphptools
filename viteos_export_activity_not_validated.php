@@ -21,6 +21,7 @@
 
 <?php
 
+// phpinfo();
 
 // include 'class/class_display.php';
 include 'class/class_activity_sheet.php';
@@ -45,7 +46,7 @@ $myDpt = new cl_department;
 
 
 try {
-    $myactivities = $myactivitysheet->getActivity('2025-01-01','2025-01-10');
+    $myactivities = $myactivitysheet->getActivity('2025-01-01','2025-01-31');
     foreach ($myactivities as $myactivity) {
 
         // on arrête s'il y a plus de 2 validateurs
@@ -58,7 +59,7 @@ try {
               
         echo $myactivity['ast_date'] . ';';
         echo $myactivity['ast_resource_name'] . ';';
-        echo $myactivity['ast_amount'] . ';';
+        echo number_format($myactivity['ast_amount'] / 3600000, 2);
         echo $myactivity['ast_tco_name'] . ';';
         echo count($myValidators) . ';';
 
@@ -75,7 +76,14 @@ try {
         echo $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
 
         // validateur existant
-        echo 'Validé par ' . $myValidators[0]['vas_created_by'] . ' le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ';';
+        if (is_null($myValidators[0]['vas_created_by'])) {
+            echo ';';
+        }
+        else {
+            //echo 'Validé par ' . $myValidators[0]['vas_created_by'] . ' le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ';';
+            echo 'Validé le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ' par ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ';';
+        }
+
 
 
         echo '<br>';

@@ -17,7 +17,7 @@
 
 <BR>
 <a href="viteos_import_accounting.php">Import accouting</a><BR><BR>
-
+<a href="viteos_export_activity_not_validated.php">Export Activity Not Validated</a>
 
 <?php
 

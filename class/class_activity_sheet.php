@@ -40,7 +40,7 @@ class cl_activity_sheet
         
         try {
             
-            $sql = 'select ast_id,per_id,tco_id,ast_date,ast_resource_name,ast_tco_name,ast_amount from vtm_activity_sheet ';
+            $sql = 'select * from vtm_activity_sheet ';
             $sql .= 'where ast_date >= \'' . $datefrom .  '\' and ast_date <= \'' . $dateto . '\' and tco_id is not null order by ast_date,ast_resource_name asc';
 
             $sth = $dbh->query($sql);

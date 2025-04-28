@@ -80,7 +80,7 @@ $per_id = $myPerId[0]['per_id'];
 
 
 try {
-    $myactivities = $myactivitysheet->getActivity('2025-01-06','2025-01-07');
+    $myactivities = $myactivitysheet->getActivity('2025-01-01','2025-03-31');
     foreach ($myactivities as $myactivity) {
 
         // on arrête s'il y a plus de 2 validateurs

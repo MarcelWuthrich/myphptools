@@ -73,16 +73,22 @@ if ($outfileSQL) {
 
 $outfileSQL = fopen($outfilenameSQL, "a+");
 
+$myRHPerson = new cl_person;
+$myPerId = $myRHPerson->getPersonFromNameFirstname('RH','auto-validation');
+$per_id = $myPerId[0]['per_id'];
+
 
 
 try {
-    $myactivities = $myactivitysheet->getActivity('2025-01-01','2025-01-31');
+    $myactivities = $myactivitysheet->getActivity('2025-01-06','2025-01-07');
     foreach ($myactivities as $myactivity) {
 
-       
         // on arrête s'il y a plus de 2 validateurs
         $myValidators = $myactivitysheet->getValidators($myactivity['ast_id']);
         if (count($myValidators) >= 2) continue;
+
+        // on arrête si l'activité a été refusée
+        if ($myValidators[0]['vas_accepted'] == 0) continue;
 
         // on arrête si c'est une activité propre à Vysual (hors Proconcept)
         $myCode = $mytco->get_time_code_with_tco_id($myactivity['tco_id']);
@@ -132,14 +138,14 @@ try {
 
         if (count($myValidators) == 0) {
             $myOutpuLineSQL = 'INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES ';
-            $myOutpuLineSQL .= '(getnextid(),\'' . $myactivity['ast_id'] . '\',\'' . $myactivity['per_id'] .  '\',1,\'validation auto\',\'admin\',NOW());';
+            $myOutpuLineSQL .= '(getnextid(),\'' . $myactivity['ast_id'] . '\',\'' . $per_id .  '\',1,\'validation auto\',\'admin\',NOW());';
             if ($outfileSQL) fwrite($outfileSQL, $myOutpuLineSQL . "\n");   
             $myOutpuLineSQL = 'INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES ';
-            $myOutpuLineSQL .= '(getnextid(),\'' . $myactivity['ast_id'] . '\',\'' . $myactivity['per_id'] .  '\',1,\'validation auto\',\'admin\',NOW());';
+            $myOutpuLineSQL .= '(getnextid(),\'' . $myactivity['ast_id'] . '\',\'' . $per_id .  '\',1,\'validation auto\',\'admin\',NOW());';
                 }
         else {
             $myOutpuLineSQL = 'INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES ';
-            $myOutpuLineSQL .= '(getnextid(),\'' . $myactivity['ast_id'] . '\',\'' . $myactivity['per_id'] .  '\',1,\'validation auto\',\'admin\',NOW());';    
+            $myOutpuLineSQL .= '(getnextid(),\'' . $myactivity['ast_id'] . '\',\'' . $per_id .  '\',1,\'validation auto\',\'admin\',NOW());';    
         }
 
 

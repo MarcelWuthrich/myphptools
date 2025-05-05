@@ -44,7 +44,7 @@ $mytco = new cl_time_code;
 $myPerson = new cl_person;
 $myDpt = new cl_department;
 
-$outfilename = "viteos.csv";
+$outfilename = "viteos activites sans validation.csv";
 $outfile = fopen($outfilename, "w");
 if ($outfile) {
     fwrite($outfile, "\xEF\xBB\xBF");  // <<< BOM UTF-8
@@ -64,7 +64,7 @@ $myOutpuLine .= 'Validation;';
 if ($outfile) fwrite($outfile, $myOutpuLine . "\n");   
 
 
-$outfilenameSQL = "viteos.sql";
+$outfilenameSQL = "viteos activation manuelle.sql";
 $outfileSQL = fopen($outfilenameSQL, "w");
 if ($outfileSQL) {
     fwrite($outfileSQL, "\xEF\xBB\xBF");  // <<< BOM UTF-8
@@ -88,6 +88,9 @@ try {
         if (count($myValidators) >= 2) continue;
 
         // on arrête si l'activité a été refusée
+        if (($myValidators[0]['vas_accepted'] == 0) and (count($myValidators) == 1)) continue;
+
+
         if ($myValidators[0]['vas_accepted'] == 0) continue;
 
         // on arrête si c'est une activité propre à Vysual (hors Proconcept)

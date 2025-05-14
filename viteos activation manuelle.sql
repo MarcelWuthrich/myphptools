@@ -1,1 +1,3 @@
-﻿
+﻿INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES (getnextid(),'000001-20250303-0000230105','000001-25250428-0000000001',1,'validation auto','admin',NOW());
+INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES (getnextid(),'000001-20250307-0000229755','000001-25250428-0000000001',1,'validation auto','admin',NOW());
+INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES (getnextid(),'000001-20250307-0000229823','000001-25250428-0000000001',1,'validation auto','admin',NOW());

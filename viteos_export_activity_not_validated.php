@@ -61,6 +61,8 @@ $myOutpuLine .= 'Nbre validation;';
 $myOutpuLine .= 'Responsable activité;';
 $myOutpuLine .= 'Responsable hiérarchique;';
 $myOutpuLine .= 'Validation;';
+$myOutpuLine .= 'Validateur manquant 1;';
+$myOutpuLine .= 'Validateur manquant 2;';
 if ($outfile) fwrite($outfile, $myOutpuLine . "\n");   
 
 
@@ -80,7 +82,7 @@ $per_id = $myPerId[0]['per_id'];
 
 
 try {
-    $myactivities = $myactivitysheet->getActivity('2025-01-01','2025-03-31');
+    $myactivities = $myactivitysheet->getActivity('2025-03-01','2025-03-31');
     foreach ($myactivities as $myactivity) {
 
         // on arrête s'il y a plus de 2 validateurs
@@ -88,10 +90,14 @@ try {
         if (count($myValidators) >= 2) continue;
 
         // on arrête si l'activité a été refusée
-        if (($myValidators[0]['vas_accepted'] == 0) and (count($myValidators) == 1)) continue;
-
-
-        if ($myValidators[0]['vas_accepted'] == 0) continue;
+        if (count($myValidators) == 1) {
+            if ($myValidators[0]['vas_accepted'] == 0) {
+                continue;
+            }
+        }
+        //if (($myValidators[0]['vas_accepted'] == 0) and (count($myValidators) == 1)) continue;
+        //echo 'Nbre validateur : ' .      count($myValidators) . ' ' . $myactivity['ast_id'] . '<BR>';       
+        //if ($myValidators[0]['vas_accepted'] == 0) continue;
 
         // on arrête si c'est une activité propre à Vysual (hors Proconcept)
         $myCode = $mytco->get_time_code_with_tco_id($myactivity['tco_id']);
@@ -122,7 +128,27 @@ try {
             //echo 'Validé par ' . $myValidators[0]['vas_created_by'] . ' le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ';';
             echo 'Validé le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ' par ' . $myValidators[0]['vas_created_by'] . ';';
         }
-        echo '<br>';
+
+        // validateur manquant
+        if (count($myValidators) == 1) {
+            if ($myValidators[0]['vas_created_by'] ==  $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname']) {
+                echo $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';';
+            }
+            if ($myValidators[0]['vas_created_by'] ==  $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname']) {
+                echo $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
+            }
+        }
+        else {
+            //echo 'Validé par ' . $myValidators[0]['vas_created_by'] . ' le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ';';
+            //echo 'Validézz le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ' par ' . $myValidators[0]['vas_created_by'] . ';';
+            echo ';';
+        }
+
+        if (count($myValidators) == 0) {
+                echo $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';' . $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
+        }
+
+        
 
         $myOutpuLine=$myactivity['ast_date'] . ';';
         $myOutpuLine .= $myactivity['ast_resource_name'] . ';';
@@ -138,6 +164,22 @@ try {
             //echo 'Validé par ' . $myValidators[0]['vas_created_by'] . ' le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ';';
             $myOutpuLine .= 'Validé le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ' par ' . $myValidators[0]['vas_created_by'] . ';';
         }
+
+        // validateur manquant
+        if (count($myValidators) == 1) {
+            if ($myValidators[0]['vas_created_by'] ==  $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname']) {
+                $myOutpuLine .= $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';';
+            }
+            if ($myValidators[0]['vas_created_by'] ==  $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname']) {
+                $myOutpuLine .= $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
+            }
+        }
+
+               if (count($myValidators) == 0) {
+                $myOutpuLine .= $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';' . $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
+        }
+
+ 
 
         if (count($myValidators) == 0) {
             $myOutpuLineSQL = 'INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES ';
@@ -155,6 +197,7 @@ try {
         if ($outfile) fwrite($outfile, $myOutpuLine . "\n");   
         if ($outfileSQL) fwrite($outfileSQL, $myOutpuLineSQL . "\n");   
 
+        echo '<BR>';
     }
 }
 catch (PDOException $e) {

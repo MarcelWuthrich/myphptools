@@ -44,6 +44,9 @@ $mytco = new cl_time_code;
 $myPerson = new cl_person;
 $myDpt = new cl_department;
 
+$DateFrom = '2025-04-01';
+$DateTo = '2025-04-30';
+
 $outfilename = "viteos activites sans validation.csv";
 $outfile = fopen($outfilename, "w");
 if ($outfile) {
@@ -82,14 +85,14 @@ $per_id = $myPerId[0]['per_id'];
 
 
 try {
-    $myactivities = $myactivitysheet->getActivity('2025-03-01','2025-03-31');
+    $myactivities = $myactivitysheet->getActivity($DateFrom,$DateTo);
     foreach ($myactivities as $myactivity) {
 
         // on arrête s'il y a plus de 2 validateurs
         $myValidators = $myactivitysheet->getValidators($myactivity['ast_id']);
         if (count($myValidators) >= 2) continue;
 
-        // on arrête si l'activité a été refusée
+        // on arrête si l'activité a été validée et refusée
         if (count($myValidators) == 1) {
             if ($myValidators[0]['vas_accepted'] == 0) {
                 continue;
@@ -103,32 +106,93 @@ try {
         $myCode = $mytco->get_time_code_with_tco_id($myactivity['tco_id']);
         if (is_null($myCode[0]['tco_external_id'])) continue;
 
+        
         echo $myactivity['ast_date'] . ';';
+        $myOutpuLine=$myactivity['ast_date'] . ';';
+
         echo $myactivity['ast_resource_name'] . ';';
+        $myOutpuLine .= $myactivity['ast_resource_name'] . ';';
+
         echo number_format($myactivity['ast_amount'] / 3600000, 2) . ';';
+        $myOutpuLine .= number_format($myactivity['ast_amount'] / 3600000, 2) . ';';
+
         echo $myactivity['ast_tco_name'] . ';';
+        $myOutpuLine .= $myactivity['ast_tco_name'] . ';';
+
         echo count($myValidators) . ';';
+        $myOutpuLine .= count($myValidators) . ';';
 
         // responsable d'activité
         $activityResponsable = $myPerson->getPersonFromPerId($myCode[0]['per_id']);
-        echo $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';';
+        $responsableActivite = $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] ;
+        echo $responsableActivite;
+        $myOutpuLine .= $responsableActivite . ';';
+
 
         // responsable de département
         $dpt = $myDpt->getDepartmentFromPerId($myactivity['per_id']);
         $responsablePerId = $myDpt->getDepartmentResponsable($myactivity['per_id']);
         $myResponsable = new cl_person;
         $myResponsable = $myResponsable->getPersonFromPerId($responsablePerId[0]['responsable_per_id']);
-        echo $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
+        $responsableDepartement = $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'];
+        echo $responsableDepartement;
+        $myOutpuLine .= $responsableDepartement . ';';
+
+
 
         // validateur existant
         if (count($myValidators) == 0) {
             echo ';';
+            $myOutpuLine .= ';';
         }
         else {
             //echo 'Validé par ' . $myValidators[0]['vas_created_by'] . ' le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ';';
-            echo 'Validé le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ' par ' . $myValidators[0]['vas_created_by'] . ';';
+            $validateur = $myValidators[0]['vas_created_by'];
+            echo 'Validé le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ' par ' . $validateur . ';';
+            $myOutpuLine .= 'Validé le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ' par ' . $validateur . ';';
         }
 
+
+        // si les responsables sont identiques
+        if ($responsableActivite == $responsableDepartement) {
+            
+            if (count($myValidators) == 0) {
+                // mêmes responsables, pas de validation, on affiche le nom 
+                echo $responsableActivite;
+                $myOutpuLine .= $responsableActivite;
+            }
+            if (count($myValidators) == 1) {
+                // mêmes responsable, 1 validation, c'est validé. Vide.
+                echo '';
+                $myOutpuLine .= ';';
+            }
+        }
+
+
+        // si les responsables sont différents
+        if ($responsableActivite <> $responsableDepartement) {
+            
+            if (count($myValidators) == 0) {
+                // responsables différents, pas de validation, on affiche les 2 nom s
+                echo $responsableActivite . ';' . $responsableDepartement;
+                $myOutpuLine .= $responsableActivite . ';' . $responsableDepartement;
+            }
+            if (count($myValidators) == 1) {
+                // responsables différents, 1 validation, on affiche le nom manquant
+                if ($validateur == $responsableActivite) {
+                    echo $responsableDepartement;
+                    $myOutpuLine .= $responsableDepartement;
+                }
+                if ($validateur == $responsableDepartement) {
+                    echo $responsableActivite;
+                    $myOutpuLine .= $responsableActivite;
+                }      
+                echo '';
+            }
+        }
+
+
+/*
         // validateur manquant
         if (count($myValidators) == 1) {
             if ($myValidators[0]['vas_created_by'] ==  $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname']) {
@@ -147,16 +211,12 @@ try {
         if (count($myValidators) == 0) {
                 echo $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';' . $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
         }
-
+*/
         
 
-        $myOutpuLine=$myactivity['ast_date'] . ';';
-        $myOutpuLine .= $myactivity['ast_resource_name'] . ';';
-        $myOutpuLine .= number_format($myactivity['ast_amount'] / 3600000, 2) . ';';
-        $myOutpuLine .= $myactivity['ast_tco_name'] . ';';
-        $myOutpuLine .= count($myValidators) . ';';
-        $myOutpuLine .= $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';';
-        $myOutpuLine .= $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
+        
+        /*
+        
         if (count($myValidators) == 0) {
             $myOutpuLine .= ';';
         }
@@ -179,7 +239,7 @@ try {
                 $myOutpuLine .= $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';' . $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
         }
 
- 
+ */
 
         if (count($myValidators) == 0) {
             $myOutpuLineSQL = 'INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES ';

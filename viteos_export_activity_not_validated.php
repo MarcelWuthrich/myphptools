@@ -28,6 +28,7 @@ include 'class/class_activity_sheet.php';
 include 'class/class_time_code.php';
 include 'class/class_person.php';
 include 'class/class_department.php';
+include 'class/class_working_time.php';
 
 if (!empty($_POST)) {
     $_POST = $_POST;
@@ -131,11 +132,10 @@ try {
 
         // responsable de département
         $dpt = $myDpt->getDepartmentFromPerId($myactivity['per_id']);
-        $responsablePerId = $myDpt->getDepartmentResponsable($myactivity['per_id']);
-        $myResponsable = new cl_person;
-        $myResponsable = $myResponsable->getPersonFromPerId($responsablePerId[0]['responsable_per_id']);
-        $responsableDepartement = $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'];
-        echo $responsableDepartement;
+        $wt = new cl_working_time;
+        $responsable = $wt->get_responsible_at_given_date($myactivity['per_id'], $myactivity['ast_date']);
+        $responsableDepartement = $responsable['per_name'] . ' ' . $responsable['per_firstname'];
+        echo $responsableDepartement . ';';
         $myOutpuLine .= $responsableDepartement . ';';
 
 
@@ -191,55 +191,6 @@ try {
             }
         }
 
-
-/*
-        // validateur manquant
-        if (count($myValidators) == 1) {
-            if ($myValidators[0]['vas_created_by'] ==  $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname']) {
-                echo $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';';
-            }
-            if ($myValidators[0]['vas_created_by'] ==  $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname']) {
-                echo $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
-            }
-        }
-        else {
-            //echo 'Validé par ' . $myValidators[0]['vas_created_by'] . ' le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ';';
-            //echo 'Validézz le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ' par ' . $myValidators[0]['vas_created_by'] . ';';
-            echo ';';
-        }
-
-        if (count($myValidators) == 0) {
-                echo $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';' . $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
-        }
-*/
-        
-
-        
-        /*
-        
-        if (count($myValidators) == 0) {
-            $myOutpuLine .= ';';
-        }
-        else {
-            //echo 'Validé par ' . $myValidators[0]['vas_created_by'] . ' le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ';';
-            $myOutpuLine .= 'Validé le ' . date('d.m.Y', strtotime($myValidators[0]['vas_created_date'])) . ' à ' . date('H:i:s', strtotime($myValidators[0]['vas_created_date'])) . ' par ' . $myValidators[0]['vas_created_by'] . ';';
-        }
-
-        // validateur manquant
-        if (count($myValidators) == 1) {
-            if ($myValidators[0]['vas_created_by'] ==  $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname']) {
-                $myOutpuLine .= $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';';
-            }
-            if ($myValidators[0]['vas_created_by'] ==  $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname']) {
-                $myOutpuLine .= $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
-            }
-        }
-
-               if (count($myValidators) == 0) {
-                $myOutpuLine .= $activityResponsable[0]['per_name'] . ' ' . $activityResponsable[0]['per_firstname'] . ';' . $myResponsable[0]['per_name'] . ' ' . $myResponsable[0]['per_firstname'] . ';';
-        }
-
- */
 
         if (count($myValidators) == 0) {
             $myOutpuLineSQL = 'INSERT into vtm_activity_sheet_validation (vas_id,ast_id,per_id,vas_accepted,vas_comment,vas_created_by,vas_created_date) VALUES ';

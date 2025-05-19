@@ -5,6 +5,7 @@ class cl_working_time
 {
 
 
+
     public function get_active_per_id_between_date($start_date, $end_date) {
     
         
@@ -203,6 +204,93 @@ class cl_working_time
     }
 
         
+
+public function get_responsible_at_given_date($per_id, $date)
+    {
+        include_once 'constant.php';
+
+        $myhost = $_SERVER["SERVER_NAME"];
+        $user = USER;
+        $pass = ($myhost == HOSTNAMEHOME) ? PASSWORDHOME : PASSWORDWORK;
+        $dsn  = ($myhost == HOSTNAMEHOME) ? DSNHOME : DSNWORK;
+
+        try {
+            $dbh = new PDO($dsn, $user, $pass);
+            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            echo 'Erreur de connexion : ' . $e->getMessage();
+            return null;
+        }
+
+        try {
+            // 1. Trouver le département actif de l'utilisateur
+            $sql_dpt = "
+                SELECT dpt_id
+                FROM vtm_working_time
+                WHERE per_id = :per_id
+                AND wkt_start_date <= :date
+                AND (wkt_end_date >= :date OR wkt_end_date IS NULL)
+                ORDER BY wkt_start_date DESC
+                LIMIT 1
+            ";
+            $stmt = $dbh->prepare($sql_dpt);
+            $stmt->execute([':per_id' => $per_id, ':date' => $date]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$result || empty($result['dpt_id'])) {
+                return null;
+            }
+
+            $current_dpt = $result['dpt_id'];
+
+            // 2. Remonter la hiérarchie jusqu'à trouver un responsable
+            while ($current_dpt !== null) {
+                // Chercher un responsable dans le département courant
+                $sql_responsable = "
+                    SELECT 
+                        wkt.wkt_id,
+                        wkt.wkt_start_date,
+                        wkt.wkt_end_date,
+                        per.per_id AS responsable_id,
+                        per.per_name,
+                        per.per_firstname,
+                        per.per_role
+                    FROM vtm_working_time wkt
+                    JOIN gbl_person per ON per.per_id = wkt.per_id
+                    WHERE wkt.dpt_id = :dpt_id
+                    AND wkt.wkt_start_date <= :date
+                    AND (wkt.wkt_end_date >= :date OR wkt.wkt_end_date IS NULL)
+                    AND per.per_role = 'time_manager'
+                    ORDER BY wkt.wkt_start_date DESC
+                    LIMIT 1
+                ";
+
+                $stmt2 = $dbh->prepare($sql_responsable);
+                $stmt2->execute([':dpt_id' => $current_dpt, ':date' => $date]);
+                $responsable = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+                if ($responsable) {
+                    return $responsable;
+                }
+
+                // Aucun responsable ici, on monte d'un cran
+                $sql_parent = "SELECT parent_id FROM gbl_department WHERE dpt_id = :dpt_id";
+                $stmt3 = $dbh->prepare($sql_parent);
+                $stmt3->execute([':dpt_id' => $current_dpt]);
+                $parent = $stmt3->fetch(PDO::FETCH_ASSOC);
+
+                $current_dpt = $parent ? $parent['parent_id'] : null;
+            }
+
+            // Aucun responsable trouvé
+            return null;
+
+        } catch (PDOException $e) {
+            echo "Erreur SQL : " . $e->getMessage();
+            return null;
+        }
+    }
+
 
 
 }

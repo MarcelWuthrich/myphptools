@@ -223,7 +223,7 @@ public function get_responsible_at_given_date($per_id, $date)
         }
 
         try {
-            // 1. Trouver le département actif de l'utilisateur
+            // Étape 1 : Trouver le département actif de la personne
             $sql_dpt = "
                 SELECT dpt_id
                 FROM vtm_working_time
@@ -243,9 +243,8 @@ public function get_responsible_at_given_date($per_id, $date)
 
             $current_dpt = $result['dpt_id'];
 
-            // 2. Remonter la hiérarchie jusqu'à trouver un responsable
+            // Étape 2 : Remonter la hiérarchie pour trouver un time_manager ≠ per_id
             while ($current_dpt !== null) {
-                // Chercher un responsable dans le département courant
                 $sql_responsable = "
                     SELECT 
                         wkt.wkt_id,
@@ -261,28 +260,31 @@ public function get_responsible_at_given_date($per_id, $date)
                     AND wkt.wkt_start_date <= :date
                     AND (wkt.wkt_end_date >= :date OR wkt.wkt_end_date IS NULL)
                     AND per.per_role = 'time_manager'
+                    AND per.per_id != :per_id
                     ORDER BY wkt.wkt_start_date DESC
                     LIMIT 1
                 ";
 
                 $stmt2 = $dbh->prepare($sql_responsable);
-                $stmt2->execute([':dpt_id' => $current_dpt, ':date' => $date]);
+                $stmt2->execute([
+                    ':dpt_id' => $current_dpt,
+                    ':date' => $date,
+                    ':per_id' => $per_id // Pour ne pas retourner lui-même
+                ]);
                 $responsable = $stmt2->fetch(PDO::FETCH_ASSOC);
 
                 if ($responsable) {
                     return $responsable;
                 }
 
-                // Aucun responsable ici, on monte d'un cran
+                // Monter dans la hiérarchie
                 $sql_parent = "SELECT parent_id FROM gbl_department WHERE dpt_id = :dpt_id";
                 $stmt3 = $dbh->prepare($sql_parent);
                 $stmt3->execute([':dpt_id' => $current_dpt]);
                 $parent = $stmt3->fetch(PDO::FETCH_ASSOC);
-
                 $current_dpt = $parent ? $parent['parent_id'] : null;
             }
 
-            // Aucun responsable trouvé
             return null;
 
         } catch (PDOException $e) {

@@ -3,7 +3,7 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>Viteos Import Accounting</title>
+    <title>Pressor Import Accounting</title>
     <link rel="stylesheet" href="style/style.css">
 </head>
 
@@ -11,12 +11,12 @@
 
 <ul>
   <li><a class="active" href="index.php">Tools</a></li>
-  <li><a href="viteos.php">Viteos</a></li>
+  <li><a href="pressor.php">Pressor</a></li>
 </ul>
 
 
 
-<BR><form action="viteos_import_accounting.php" method="post">
+<BR><form action="pressor_import_accounting.php" method="post">
 
 
 <?php

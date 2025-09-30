@@ -226,7 +226,7 @@ echo '7<BR>';
 try {
     fclose($outfile);    
 }
-catch (PDOException $e) {
+catch (Exception $e) {
     echo "Failed: " . $e->getMessage() . '<BR>';
 }
 

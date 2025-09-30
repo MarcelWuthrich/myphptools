@@ -111,7 +111,7 @@ foreach ($csv_data as $line) {
             $mytimecode = $mytimecode->get_time_code_with_tco_name('Heures supplémentaires');
             break;
 
-        case 'Heures SUP':
+        case 'Vacances':
             $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Vacances');
             $mytimecode = $mytimecode->get_time_code_with_tco_name('Vacances');
             break;
@@ -132,7 +132,7 @@ foreach ($csv_data as $line) {
 
     if ($previous_per_id <> $per_id) echo '<BR>';
    
-    echo $per_name . ' ' . $per_firstname . ' (per_id : ' . $per_id . ') (user_name : ' . $line['PersonalNumber'] . ') (counter :  ' . $line['Counter'] . ') (amount : ' . $line['Amount'] . ')<BR>';
+    echo $per_name . ' ' . $per_firstname . ' (per_id : ' . $per_id . ') (user_name : ' .  ') (counter :  ' . $line['Counter'] . ') (amount : ' . $line['Amount'] . ')<BR>';
     $mytitle = '-- ' . $per_name . ' ' . $per_firstname . ' : ' . $line['Counter'];
     if ($outfile) fwrite($outfile, "\n" . $mytitle . "\n");
 

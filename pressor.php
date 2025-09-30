@@ -11,7 +11,7 @@
 
 <ul>
   <li><a class="active" href="index.php">Tools</a></li>
-  <li><a href="pressor.php">Viteos</a></ki>
+  <li><a href="pressor.php">Pressor</a></ki>
 </ul>
 
 

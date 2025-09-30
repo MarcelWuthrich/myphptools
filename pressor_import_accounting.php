@@ -142,8 +142,6 @@ foreach ($csv_data as $line) {
         continue;
     }
 
-    echo '1<BR>';
-
     $myworkingtime = $myworkingtime->get_active_wkt_from_per_id($per_id);
     $wkt_id = $myworkingtime[0]['wkt_id'];
     $wkt_parent_id = $myworkingtime[0]['parent_id'];
@@ -151,8 +149,6 @@ foreach ($csv_data as $line) {
     $myparentworkingtime = $myparentworkingtime->get__wkt_from_wkt_id($wkt_parent_id);
     $wkt_model_name = $myparentworkingtime[0]['wkt_model_name'];
 
-    echo '2<BR>';
-        
 
     $aca_date_time = DateTime::createFromFormat('d.m.Y', $line['Date'])->format('Y-m-d');
     $todo_per_day = $myworkingtime[0]['wkt_weekly_hours'] * $myworkingtime[0]['wkt_activity_rate'] / 100 / 5;
@@ -161,7 +157,6 @@ foreach ($csv_data as $line) {
     $amount_in_hour = intval(floatval($line['Amount'] * 3600000));
     $amount_in_day = intval(floatval($line['Amount'] * $todo_per_day));
     
-    echo '3<BR>';
 
     if ($line['Counter'] == 'Vacances') {
         if ($todo_per_day == 0) {
@@ -175,7 +170,6 @@ foreach ($csv_data as $line) {
         $aca_comment = "Ajout du solde dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / 3600000),2) . " heure(s)";
     }   
     
-    echo '4<BR>';
    
     $mySQLInsertCommand = "INSERT INTO vtm_activity_counter_accounting (";
     $mySQLInsertCommand .= "aca_id,";
@@ -209,19 +203,15 @@ foreach ($csv_data as $line) {
     $mySQLInsertCommand .= "NOW()";                     // created date
     $mySQLInsertCommand .= ");";
 
-   
-    echo '5<BR>';
-    
+ 
 
     if ($outfile) fwrite($outfile, $mySQLInsertCommand . "\n");
         
     $previous_per_id = $per_id;
-    
- echo '6<BR>';
+  
  
 }
 
-echo '7<BR>';
 
 try {
     fclose($outfile);    

@@ -71,7 +71,7 @@ if (($handle = fopen($csv_file, "r")) !== FALSE) {
 }
 
 
-$outfilename = "insert_accounting.sql";
+$outfilename = "pressor_insert_accounting.sql";
 $outfile = fopen($outfilename, "w");
 if ($outfile) {
     fclose($outfile);

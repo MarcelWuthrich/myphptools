@@ -44,7 +44,7 @@ echo date('Y-m-d H:i:s') . "<BR><BR>";
 
 
  // Chemin vers votre fichier CSV
-$csv_file = '2024-08-31 Export_Soldes_ProTime_mini.csv';
+$csv_file = 'pressor.csv';
 //$csv_file = '2024-08-31 Export_Soldes_ProTime.csv';
 
 // Initialisation du tableau pour stocker les données
@@ -94,7 +94,7 @@ foreach ($csv_data as $line) {
 
     
     try {
-        $myperson = $myperson->getPersonFromPersonalNumber($line['PersonalNumber']);
+        //$myperson = $myperson->getPersonFromPersonalNumber($line['PersonalNumber']);
         $myperson = $myperson->getPersonFromNameFirstname($line['Lastname'],$line['Firstname']);
         
     }

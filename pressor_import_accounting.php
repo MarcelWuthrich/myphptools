@@ -223,7 +223,14 @@ foreach ($csv_data as $line) {
 
 echo '7<BR>';
 
-fclose($outfile);
+try {
+    fclose($outfile);    
+}
+catch (PDOException $e) {
+    echo "Failed: " . $e->getMessage() . '<BR>';
+}
+
+
 
 
 echo "<BR>export successfully terminated<BR>";

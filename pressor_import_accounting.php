@@ -169,10 +169,10 @@ foreach ($csv_data as $line) {
             continue;
         }
         $amount = $amount_in_day;
-        $aca_comment = "Ajout du solde de " . $line['Counter'] . " dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / $todo_per_day ), 2) . " jour(s)";
+        $aca_comment = "Ajout du solde dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / $todo_per_day ), 2) . " jour(s)";
     } else {
         $amount = $amount_in_hour;
-        $aca_comment = "Ajout du solde de " . $line['Counter'] . " dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / 3600000),2) . " heure(s)";
+        $aca_comment = "Ajout du solde dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / 3600000),2) . " heure(s)";
     }   
     
     

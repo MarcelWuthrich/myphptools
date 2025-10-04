@@ -54,6 +54,9 @@ $csv_data = array();
 if (($handle = fopen($csv_file, "r")) !== FALSE) {
     // Parcourir chaque ligne du fichier
     while (($line = fgetcsv($handle, 1000, ";")) !== FALSE) {
+         $line = array_map(function($value) {
+            return mb_convert_encoding($value, "UTF-8", "ISO-8859-1");
+        }, $line);
         // Ajouter chaque ligne au tableau
         $csv_data[] = array(
             'Lastname' => $line[0],
@@ -70,6 +73,7 @@ if (($handle = fopen($csv_file, "r")) !== FALSE) {
     echo "Error opening file<BR>";
 }
 
+// echo $csv_data
 
 $outfilename = "pressor_insert_accounting.sql";
 $outfile = fopen($outfilename, "w");
@@ -95,6 +99,7 @@ foreach ($csv_data as $line) {
     
     try {
         //$myperson = $myperson->getPersonFromPersonalNumber($line['PersonalNumber']);
+        // echo $line['Lastname'],' ',$line['Firstname'];
         $myperson = $myperson->getPersonFromNameFirstname($line['Lastname'],$line['Firstname']);
         
     }

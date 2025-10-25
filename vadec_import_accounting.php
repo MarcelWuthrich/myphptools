@@ -3,7 +3,7 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>Pressor Import Accounting</title>
+    <title>Vadec Import Accounting</title>
     <link rel="stylesheet" href="style/style.css">
 </head>
 
@@ -11,12 +11,12 @@
 
 <ul>
   <li><a class="active" href="index.php">Tools</a></li>
-  <li><a href="pressor.php">Pressor</a></li>
+  <li><a href="vadec.php">Vadec</a></li>
 </ul>
 
 
 
-<BR><form action="pressor_import_accounting.php" method="post">
+<BR><form action="vadec_import_accounting.php" method="post">
 
 
 <?php
@@ -44,7 +44,7 @@ echo date('Y-m-d H:i:s') . "<BR><BR>";
 
 
  // Chemin vers votre fichier CSV
-$csv_file = 'pressor.csv';
+$csv_file = 'vadec.csv';
 //$csv_file = '2024-08-31 Export_Soldes_ProTime.csv';
 
 // Initialisation du tableau pour stocker les données
@@ -52,18 +52,17 @@ $csv_data = array();
 
 // Ouverture du fichier en lecture
 if (($handle = fopen($csv_file, "r")) !== FALSE) {
-    // Parcourir chaque ligne du fichier
+    // Convertit automatiquement le flux du CSV depuis Windows-1252 vers UTF-8
+    stream_filter_append($handle, 'convert.iconv.WINDOWS-1252/UTF-8');
+
     while (($line = fgetcsv($handle, 1000, ";")) !== FALSE) {
-         $line = array_map(function($value) {
-            return mb_convert_encoding($value, "UTF-8", "ISO-8859-1");
-        }, $line);
-        // Ajouter chaque ligne au tableau
         $csv_data[] = array(
-            'Lastname' => $line[0],
+            'Lastname'  => $line[0],
             'Firstname' => $line[1],
-            'Counter' => $line[2],
-            'Amount' => $line[3],
-            'Date' => $line[4]
+            'NrVadir'   => $line[2],
+            'Counter'   => $line[3],
+            'Amount'    => $line[4],
+            'Date'      => $line[5]
         );
     }
     // Fermeture du fichier
@@ -75,7 +74,7 @@ if (($handle = fopen($csv_file, "r")) !== FALSE) {
 
 // echo $csv_data
 
-$outfilename = "pressor_insert_accounting.sql";
+$outfilename = "vadec_insert_accounting.sql";
 $outfile = fopen($outfilename, "w");
 if ($outfile) {
     fclose($outfile);
@@ -100,10 +99,7 @@ foreach ($csv_data as $line) {
     try {
         //$myperson = $myperson->getPersonFromPersonalNumber($line['PersonalNumber']);
         // echo $line['Lastname'],' ',$line['Firstname'];
-        $myperson = $myperson->getPersonFromNameFirstname($line['Lastname'],$line['Firstname']);
-        if ($line['Lastname'] = 'Blazquez') {
-            $test = '';
-        }
+        $myperson = $myperson->getPersonFromPerExternalId($line['NrVadir']);
     }
     catch (PDOException $e) {
         echo "Failed: " . $e->getMessage() . '<BR>';
@@ -113,14 +109,39 @@ foreach ($csv_data as $line) {
     switch ($line['Counter']) {
     
         
-        case 'HeuresSup':
-            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Heures supplémentaires');
-            $mytimecode = $mytimecode->get_time_code_with_tco_name('Heures supplémentaires');
-            break;
-
         case 'Vacances':
             $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Vacances');
             $mytimecode = $mytimecode->get_time_code_with_tco_name('Vacances');
+            break;
+
+        case 'Solde HB':
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Solde HB');
+            $mytimecode = $mytimecode->get_time_code_with_tco_name('Solde HB');
+            break;
+
+        case 'Heures sup >20h':
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Heures supplémentaires (> 20h)');
+            $mytimecode = $mytimecode->get_time_code_with_tco_name('Heures supplémentaires HB (> 20)');
+            break;
+
+        case 'Repos compensat':
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Repos compensatoire');
+            $mytimecode = $mytimecode->get_time_code_with_tco_name('Repos compensatoire');
+            break;
+
+        case 'Jours impôts':
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Jours impôts');
+            $mytimecode = $mytimecode->get_time_code_with_tco_name('Jours impôts');
+            break;
+
+        case 'Fériés':
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Fériés');
+            $mytimecode = $mytimecode->get_time_code_with_tco_name('Fériés');
+            break;
+
+        case 'Rattrapage':
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Rattrapage');
+            $mytimecode = $mytimecode->get_time_code_with_tco_name('Rattrapage');
             break;
 
 

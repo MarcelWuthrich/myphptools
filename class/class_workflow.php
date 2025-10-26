@@ -16,9 +16,9 @@ class cl_workflow
         $dbh = $db->getConnection();
 
         // Requête sécurisée avec préparation
-        $sql  = 'SELECT * FROM wkf_workflow WHERE per_external_id = :per_external_id';
+        $sql  = 'SELECT * FROM wkf_workflow WHERE wkf_name LIKE :wkf_name';
         $sth = $dbh->prepare($sql);
-        $sth->execute(['per_external_id' => $per_external_id]);
+        $sth->execute(['wkf_name' => '%' . $wkf_name . '%']);
         $rows = $sth->fetchAll();
     } catch (Exception $e) {
         echo "Erreur : " . $e->getMessage();

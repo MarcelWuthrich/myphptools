@@ -12,7 +12,7 @@
 <ul>
   <li><a class="active" href="../index.php">Tools</a></li>
   <li><a href="workflow.php">Workflow</a></ki>
-  <li><a href="workflow.php">Change one model with another</a></ki>
+  <li><a href="workflow.php">Change time code in start context</a></ki>
 </ul>
 
 
@@ -22,15 +22,22 @@
 <?php
 
 
-include '../class_workflow.php';
+include '../class/class_workflow.php';
 //include 'class_timecode.php';
 //include 'classe_person.php';
 
 $mywkf = new cl_workflow;
 
-$test = $mywkf->getWorkflowFromName('ABS');
+$allwkf = $mywkf->getWorkflowFromName('ABS');
 
-var_dump($test);
+
+// Parcourir chaque ligne du tableau
+foreach ($allwkf as $line) {
+        echo $line['wkf_name'] . "<br>";
+}
+
+
+// var_dump($allwkf);
 
 
 

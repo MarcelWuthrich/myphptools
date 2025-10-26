@@ -4,13 +4,13 @@
 <head>
     <meta charset="utf-8">
     <title>Check balance at year-end</title>
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="../style/style.css">
 </head>
 
 <body >
 
 <ul>
-  <li><a class="active" href="index.php">Tools</a></li>
+  <li><a class="active" href="../index.php">Tools</a></li>
   <li><a href="tracking.php">Tracking</a></li>
   <li><a href="tracking_check_balance_year_end.php">Check balance at year-end</a></li>
 </ul>

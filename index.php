@@ -10,16 +10,14 @@
 <body >
 
 <ul>
-  <li><a class="active" href="index.php">Tools</a>     </li>
+  <li><a class="active" href="index.php">Tools</a></li>
+  <li><a class="active" href="pages/tracking.php">Tracking</a></li>
+  <li><a class="active" href="pages/clients.php">Clients</a></li>
 </ul>
 
-<BR><a href="tracking.php">Tracking</a>
 <BR><BR><a href="#">Device</a>
 <BR><BR><a href="#">Contrats</a>
 <BR><BR><a href="#">Accounting</a>
-<BR><BR><a href="viteos.php">Viteos</a>
-<BR><BR><a href="pressor.php">Pressor</a>
-<BR><BR><a href="vadec.php">Vadec</a>
 
 <?php
 

@@ -4,13 +4,14 @@
 <head>
     <meta charset="utf-8">
     <title>Viteos Export Activity Not Validated</title>
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="../style/style.css">
 </head>
 
 <body >
 
 <ul>
-  <li><a class="active" href="index.php">Tools</a></li>
+  <li><a class="active" href="../index.php">Tools</a></li>
+  <li><a href="clients.php">Clients</a></li>
   <li><a href="viteos.php">Viteos</a></li>
 </ul>
 
@@ -24,11 +25,11 @@
 // phpinfo();
 
 // include 'class/class_display.php';
-include 'class/class_activity_sheet.php';
-include 'class/class_time_code.php';
-include 'class/class_person.php';
-include 'class/class_department.php';
-include 'class/class_working_time.php';
+include '../class/class_activity_sheet.php';
+include '../class/class_time_code.php';
+include '../class/class_person.php';
+include '../class/class_department.php';
+include '../class/class_working_time.php';
 
 if (!empty($_POST)) {
     $_POST = $_POST;
@@ -48,7 +49,7 @@ $myDpt = new cl_department;
 $DateFrom = '2025-04-01';
 $DateTo = '2025-04-30';
 
-$outfilename = "viteos activites sans validation.csv";
+$outfilename = "../files/viteos activites sans validation.csv";
 $outfile = fopen($outfilename, "w");
 if ($outfile) {
     fwrite($outfile, "\xEF\xBB\xBF");  // <<< BOM UTF-8
@@ -70,7 +71,7 @@ $myOutpuLine .= 'Validateur manquant 2;';
 if ($outfile) fwrite($outfile, $myOutpuLine . "\n");   
 
 
-$outfilenameSQL = "viteos activation manuelle.sql";
+$outfilenameSQL = "../files/viteos activation manuelle.sql";
 $outfileSQL = fopen($outfilenameSQL, "w");
 if ($outfileSQL) {
     fwrite($outfileSQL, "\xEF\xBB\xBF");  // <<< BOM UTF-8

@@ -3,31 +3,32 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>Pressor Import Accounting</title>
-    <link rel="stylesheet" href="style/style.css">
+    <title>Viteos Import Accounting</title>
+    <link rel="stylesheet" href="../style/style.css">
 </head>
 
 <body >
 
 <ul>
-  <li><a class="active" href="index.php">Tools</a></li>
-  <li><a href="pressor.php">Pressor</a></li>
+  <li><a class="active" href="../index.php">Tools</a></li>
+  <li><a href="clients.php">Clients</a></li>
+  <li><a href="viteos.php">Viteos</a></li>
 </ul>
 
 
 
-<BR><form action="pressor_import_accounting.php" method="post">
+<BR><form action="viteos_import_accounting.php" method="post">
 
 
 <?php
 
 
-// include 'class/class_display.php';
-include 'class/class_person.php';
-include 'class/class_working_time.php';
-include 'class/class_activity_counter.php';
-include 'class/class_time_code.php';
-include 'class/class_time_sheet.php';
+// include '../class/class_display.php';
+include '../class/class_person.php';
+include '../class/class_working_time.php';
+include '../class/class_activity_counter.php';
+include '../class/class_time_code.php';
+include '../class/class_time_sheet.php';
 
  
 if (!empty($_POST)) {
@@ -44,8 +45,8 @@ echo date('Y-m-d H:i:s') . "<BR><BR>";
 
 
  // Chemin vers votre fichier CSV
-$csv_file = 'pressor.csv';
-//$csv_file = '2024-08-31 Export_Soldes_ProTime.csv';
+$csv_file = '../files/2024-08-31 Export_Soldes_ProTime_mini.csv';
+//$csv_file = '../files/2024-08-31 Export_Soldes_ProTime.csv';
 
 // Initialisation du tableau pour stocker les données
 $csv_data = array();
@@ -54,16 +55,12 @@ $csv_data = array();
 if (($handle = fopen($csv_file, "r")) !== FALSE) {
     // Parcourir chaque ligne du fichier
     while (($line = fgetcsv($handle, 1000, ";")) !== FALSE) {
-         $line = array_map(function($value) {
-            return mb_convert_encoding($value, "UTF-8", "ISO-8859-1");
-        }, $line);
         // Ajouter chaque ligne au tableau
         $csv_data[] = array(
-            'Lastname' => $line[0],
-            'Firstname' => $line[1],
-            'Counter' => $line[2],
-            'Amount' => $line[3],
-            'Date' => $line[4]
+            'PersonalNumber' => $line[0],
+            'Counter' => $line[1],
+            'Amount' => $line[2],
+            'Date' => $line[3]
         );
     }
     // Fermeture du fichier
@@ -73,9 +70,8 @@ if (($handle = fopen($csv_file, "r")) !== FALSE) {
     echo "Error opening file<BR>";
 }
 
-// echo $csv_data
 
-$outfilename = "pressor_insert_accounting.sql";
+$outfilename = "../files/insert_accounting.sql";
 $outfile = fopen($outfilename, "w");
 if ($outfile) {
     fclose($outfile);
@@ -98,12 +94,7 @@ foreach ($csv_data as $line) {
 
     
     try {
-        //$myperson = $myperson->getPersonFromPersonalNumber($line['PersonalNumber']);
-        // echo $line['Lastname'],' ',$line['Firstname'];
-        $myperson = $myperson->getPersonFromNameFirstname($line['Lastname'],$line['Firstname']);
-        if ($line['Lastname'] = 'Blazquez') {
-            $test = '';
-        }
+        $myperson = $myperson->getPersonFromPersonalNumber($line['PersonalNumber']);
     }
     catch (PDOException $e) {
         echo "Failed: " . $e->getMessage() . '<BR>';
@@ -113,9 +104,19 @@ foreach ($csv_data as $line) {
     switch ($line['Counter']) {
     
         
-        case 'HeuresSup':
-            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Heures supplémentaires');
-            $mytimecode = $mytimecode->get_time_code_with_tco_name('Heures supplémentaires');
+        case 'Heures BAL':
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Balance');
+            $mytimecode = $mytimecode->get_time_code_with_tco_name('Balance (compteur)');
+            break;
+
+        case 'Heures SUP':
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Balance');
+            $mytimecode = $mytimecode->get_time_code_with_tco_name('Balance (compteur)');
+            break;
+
+        case 'Pont':
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Récupération');
+            $mytimecode = $mytimecode->get_time_code_with_tco_name('Récupération (système)');
             break;
 
         case 'Vacances':
@@ -123,6 +124,11 @@ foreach ($csv_data as $line) {
             $mytimecode = $mytimecode->get_time_code_with_tco_name('Vacances');
             break;
 
+        case 'Unité Piquet':
+            $myactivitycounter = $myactivitycounter->get_activity_counter_from_avc_name('Piquet cumul 50h (année en cours)');
+            $mytimecode = $mytimecode->get_time_code_with_tco_name('Piquet cumul 50h (année en cours)');
+            break;
+            //exit;
 
         default:
             echo "Unknow counter : " . $line['Counter'] . "<BR>";
@@ -139,7 +145,7 @@ foreach ($csv_data as $line) {
 
     if ($previous_per_id <> $per_id) echo '<BR>';
    
-    echo $per_name . ' ' . $per_firstname . ' (per_id : ' . $per_id . ') (user_name : ' .  ') (counter :  ' . $line['Counter'] . ') (amount : ' . $line['Amount'] . ')<BR>';
+    echo $per_name . ' ' . $per_firstname . ' (per_id : ' . $per_id . ') (user_name : ' . $line['PersonalNumber'] . ') (counter :  ' . $line['Counter'] . ') (amount : ' . $line['Amount'] . ')<BR>';
     $mytitle = '-- ' . $per_name . ' ' . $per_firstname . ' : ' . $line['Counter'];
     if ($outfile) fwrite($outfile, "\n" . $mytitle . "\n");
 
@@ -156,6 +162,12 @@ foreach ($csv_data as $line) {
     $myparentworkingtime = $myparentworkingtime->get__wkt_from_wkt_id($wkt_parent_id);
     $wkt_model_name = $myparentworkingtime[0]['wkt_model_name'];
 
+    //si c'est un modèle de contrat pour les intérimaire et que ce sont les vacances ou le pont, on ne fait rien.
+    if (stripos($wkt_model_name, 'intérimaire') !== false && (($line['Counter'] == 'Pont') || ($line['Counter'] == 'Vacances'))) {
+        echo $per_name . ' ' . $per_firstname . ' : ' . $line['Counter'] . ' not for temporary employee, nothing done<BR>';
+        continue;
+    }
+        
 
     $aca_date_time = DateTime::createFromFormat('d.m.Y', $line['Date'])->format('Y-m-d');
     $todo_per_day = $myworkingtime[0]['wkt_weekly_hours'] * $myworkingtime[0]['wkt_activity_rate'] / 100 / 5;
@@ -164,18 +176,18 @@ foreach ($csv_data as $line) {
     $amount_in_hour = intval(floatval($line['Amount'] * 3600000));
     $amount_in_day = intval(floatval($line['Amount'] * $todo_per_day));
     
-
     if ($line['Counter'] == 'Vacances') {
         if ($todo_per_day == 0) {
             echo 'error : todo_per_day = 0 --> cannot convert days in hours !!!<BR>';
             continue;
         }
         $amount = $amount_in_day;
-        $aca_comment = "Ajout du solde dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / $todo_per_day ), 2) . " jour(s)";
+        $aca_comment = "Ajout du solde de " . $line['Counter'] . " dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / $todo_per_day ), 2) . " jour(s)";
     } else {
         $amount = $amount_in_hour;
-        $aca_comment = "Ajout du solde dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / 3600000),2) . " heure(s)";
+        $aca_comment = "Ajout du solde de " . $line['Counter'] . " dans " .  $mytimecode[0]['tco_name'] . " : " . number_format(floatval($amount / 3600000),2) . " heure(s)";
     }   
+    
     
    
     $mySQLInsertCommand = "INSERT INTO vtm_activity_counter_accounting (";
@@ -210,25 +222,19 @@ foreach ($csv_data as $line) {
     $mySQLInsertCommand .= "NOW()";                     // created date
     $mySQLInsertCommand .= ");";
 
- 
+   
+    
+    
 
     if ($outfile) fwrite($outfile, $mySQLInsertCommand . "\n");
         
     $previous_per_id = $per_id;
-  
+    
+ 
  
 }
 
-
-try {
-    fclose($outfile);    
-}
-catch (Exception $e) {
-    echo "Failed: " . $e->getMessage() . '<BR>';
-}
-
-
-
+fclose($outfile);
 
 echo "<BR>export successfully terminated<BR>";
 echo date('Y-m-d H:i:s') . "<BR>";

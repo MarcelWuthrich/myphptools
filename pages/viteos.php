@@ -4,13 +4,14 @@
 <head>
     <meta charset="utf-8">
     <title>Viteos</title>
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="../style/style.css">
 </head>
 
 <body >
 
 <ul>
-  <li><a class="active" href="index.php">Tools</a></li>
+  <li><a class="active" href="../index.php">Tools</a></li>
+  <li><a class="active" href="clients.php">Clients</a></li>
   <li><a href="viteos.php">Viteos</a></ki>
 </ul>
 

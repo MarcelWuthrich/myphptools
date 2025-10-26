@@ -9,7 +9,7 @@ class cl_person
     
         
         // Connexion à la DB
-        include_once 'constant.php';
+        include_once '../constant.php';
 
         // Define database connexion
         $myhost = $_SERVER["SERVER_NAME"] ;
@@ -55,7 +55,7 @@ class cl_person
     
         
         // Connexion à la DB
-        include_once 'constant.php';
+        include_once '../constant.php';
 
         // Define database connexion
         $myhost = $_SERVER["SERVER_NAME"] ;
@@ -100,7 +100,7 @@ class cl_person
   public function getPersonFromPersonalNumber($per_number) {
 
         // Connexion à la DB
-        include_once 'constant.php';
+        include_once '../constant.php';
 
         // Define database connexion
         $myhost = $_SERVER["SERVER_NAME"] ;
@@ -145,7 +145,7 @@ class cl_person
   public function getPersonFromPerExternalId($per_external_id) {
 
         // Connexion à la DB
-        include_once 'constant.php';
+        include_once '../constant.php';
 
         // Define database connexion
         $myhost = $_SERVER["SERVER_NAME"] ;

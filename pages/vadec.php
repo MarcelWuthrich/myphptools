@@ -4,13 +4,14 @@
 <head>
     <meta charset="utf-8">
     <title>Vadec</title>
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="../style/style.css">
 </head>
 
 <body >
 
 <ul>
-  <li><a class="active" href="index.php">Tools</a></li>
+  <li><a class="active" href="../index.php">Tools</a></li>
+  <li><a href="clients.php">Clients</a></ki>
   <li><a href="vadec.php">Vadec</a></ki>
 </ul>
 

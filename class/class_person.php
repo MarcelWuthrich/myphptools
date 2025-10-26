@@ -4,6 +4,8 @@ class cl_person
 
 {
 
+
+ 
     
     public function getPersonFromNameFirstname($per_name, $per_firstname) {
     
@@ -141,8 +143,30 @@ class cl_person
 
 }
         
-    
   public function getPersonFromPerExternalId($per_external_id) {
+
+    include_once 'class_database.php';
+    $rows = [];
+
+    try {
+        // Récupération de l'instance singleton
+        $db = ClassDatabase::getInstance();
+        $dbh = $db->getConnection();
+
+        // Requête sécurisée avec préparation
+        $sql  = 'SELECT * FROM gbl_person WHERE per_external_id = :per_external_id';
+        $sth = $dbh->prepare($sql);
+        $sth->execute(['per_external_id' => $per_external_id]);
+        $rows = $sth->fetchAll();
+    } catch (Exception $e) {
+        echo "Erreur : " . $e->getMessage();
+    }
+
+    return $rows;
+}
+
+
+  public function getPersonFromPerExternalId2($per_external_id) {
 
         // Connexion à la DB
         include_once '../constant.php';

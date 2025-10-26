@@ -12,11 +12,12 @@
 <ul>
   <li><a class="active" href="index.php">Tools</a></li>
   <li><a class="active" href="pages/tracking.php">Tracking</a></li>
+  <li><a class="active" href="pages/contracts.php">Contrats</a></li>
+  <li><a class="active" href="pages/workflow.php">Workflow</a></li>
   <li><a class="active" href="pages/clients.php">Clients</a></li>
 </ul>
 
 <BR><BR><a href="#">Device</a>
-<BR><BR><a href="#">Contrats</a>
 <BR><BR><a href="#">Accounting</a>
 
 <?php
